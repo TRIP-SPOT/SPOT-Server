@@ -2,6 +2,7 @@ package com.spot.spotserver.api.record.domain;
 
 import jakarta.persistence.*;
 
+@Entity
 public class RecordImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
