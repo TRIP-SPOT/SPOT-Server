@@ -15,10 +15,6 @@ public class Record extends BaseEntity {
 
     private String description;
 
-    private String imageUrl;
-
-    private Boolean isRepresentative;
-
     private Region region;
 
     @ManyToOne
