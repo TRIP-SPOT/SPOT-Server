@@ -12,7 +12,8 @@ import static org.springframework.http.HttpStatus.OK;
 public enum SuccessCode {
 
     // 200 OK
-    GET_SPOT_SUCCESS(OK, "촬영지 조회에 성공하였습니다.");
+    GET_SPOT_SUCCESS(OK, "촬영지 조회에 성공하였습니다."),
+    LOGIN_SUCCESS(OK, "로그인에 성공하였습니다");
 
     private final HttpStatus httpStatus;
     private final String message;
