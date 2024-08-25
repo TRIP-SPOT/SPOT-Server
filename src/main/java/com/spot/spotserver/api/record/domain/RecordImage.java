@@ -14,7 +14,7 @@ public class RecordImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imageUrl;
+    private String url;
 
     private Boolean isRepresentative;
 
@@ -23,8 +23,8 @@ public class RecordImage {
     private Record record;
 
     @Builder
-    public RecordImage(String imageUrl, Boolean isRepresentative, Record record) {
-        this.imageUrl = imageUrl;
+    public RecordImage(String url, Boolean isRepresentative, Record record) {
+        this.url = url;
         this.isRepresentative = isRepresentative;
         this.record = record;
     }
