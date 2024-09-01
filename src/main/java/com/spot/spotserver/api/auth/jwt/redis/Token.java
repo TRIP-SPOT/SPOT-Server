@@ -6,14 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 
-@RedisHash(value = "Token", timeToLive = 60 * 60 * 1000L * 24 * 14)
+@RedisHash(value = "Token", timeToLive = 60 * 60 * 24 * 14)
 @AllArgsConstructor
 @Getter
 @Builder
 public class Token {
 
     @Id
-    private Long id;
+    private String id;
 
     private String refreshToken;
 
@@ -21,11 +21,9 @@ public class Token {
             final Long id,
             final String refreshToken
     ) {
-        String cleanedRefreshToken = refreshToken.replace("\"", "");
-
         return Token.builder()
-                .id(id)
-                .refreshToken(cleanedRefreshToken)
+                .id(id.toString())
+                .refreshToken(refreshToken)
                 .build();
     }
 }
