@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.auth.controller;
 
+import com.spot.spotserver.api.auth.dto.request.TokenRequest;
 import com.spot.spotserver.api.auth.dto.response.TokenResponse;
 import com.spot.spotserver.api.auth.service.AuthService;
 import com.spot.spotserver.api.user.service.UserService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/api/login/kakao")
     public ApiResponse<TokenResponse> login(@RequestParam final String authorizationCode) {
@@ -27,5 +29,12 @@ public class AuthController {
                 successResponse.refreshToken()
         );
         return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, result);
+    }
+
+    @PostMapping("/api/refresh")
+    public ApiResponse<TokenResponse> reissueToken(@RequestBody TokenRequest request) {
+
+        TokenResponse result = userService.reissueToken(request.refreshToken());
+        return ApiResponse.success(SuccessCode.REISSUE_TOKEN_SUCCESS, result);
     }
 }
