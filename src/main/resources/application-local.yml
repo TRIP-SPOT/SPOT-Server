@@ -17,3 +17,7 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+aws:
+  s3:
+    bucket: spot1500-s3-bucket
