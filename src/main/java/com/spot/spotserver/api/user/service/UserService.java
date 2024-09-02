@@ -50,4 +50,14 @@ public class UserService {
         );
     }
 
+    public TokenResponse reissueToken(final String refreshToken) {
+        Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
+        UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
+        String newAccessToken = jwtTokenProvider.issueAccessToken(userAuthentication);
+        String newRefreshToken = jwtTokenProvider.issueRefreshToken(userAuthentication);
+
+        // 새로운 리프레시 토큰으로 교체
+        refreshTokenService.saveRefreshToken(userId, newRefreshToken);
+        return TokenResponse.of(newAccessToken, newRefreshToken);
+    }
 }

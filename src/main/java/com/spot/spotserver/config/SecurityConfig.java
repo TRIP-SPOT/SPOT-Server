@@ -44,7 +44,8 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/api/login/kakao",
-            "/api/login/apple"
+            "/api/login/apple",
+            "/api/refresh"
     };
 
     @Bean
