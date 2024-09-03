@@ -8,6 +8,8 @@ import com.spot.spotserver.api.auth.dto.response.TokenResponse;
 import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
+import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.api.user.repository.UserRepository;
 import com.spot.spotserver.api.user.service.UserService;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,7 @@ public class AuthService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
@@ -68,7 +71,6 @@ public class AuthService {
         return new TokenResponse(jwtAccessToken, jwtRefreshToken);
     }
 
-
     private KakaoAccessTokenResponse getOAuth2Authentication(final String authorizationCode) {
         KakaoAccessTokenResponse tokenResponse = kakaoAuthApiClient.getOAuth2AccessToken(
                 AUTH_CODE, clientId, REDIRECT_URI, authorizationCode, clientSecret);
@@ -85,5 +87,11 @@ public class AuthService {
         } else {
             return userService.getTokenByUserId(userService.createUser(userResponse));
         }
+    }
+
+    public User getUserFromAccessToken(String accessToken) {
+        Long userId = jwtTokenProvider.getUserFromJwt(accessToken);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
     }
 }
