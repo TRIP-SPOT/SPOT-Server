@@ -18,6 +18,9 @@ spring:
       host: localhost
       port: 6379
 
-aws:
-  s3:
-    bucket: spot1500-s3-bucket
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: spot1500-s3-bucket
