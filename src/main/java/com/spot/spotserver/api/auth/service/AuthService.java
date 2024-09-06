@@ -91,7 +91,7 @@ public class AuthService {
 
     public User getUserFromAccessToken(String accessToken) {
         Long userId = jwtTokenProvider.getUserFromJwt(accessToken);
-        return userRepository.findById(userId)
+        return userRepository.findBySocialId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
     }
 }
