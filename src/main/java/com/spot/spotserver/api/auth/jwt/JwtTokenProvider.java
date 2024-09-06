@@ -73,9 +73,7 @@ public class JwtTokenProvider {
     }
 
     public Long getUserFromJwt(String token) {
-        String refreshToken = token.replace("\"", "");
-
-        Claims claims = getBody(refreshToken);
+        Claims claims = getBody(token);
         return Long.valueOf(claims.get(USER_ID).toString());
     }
 
