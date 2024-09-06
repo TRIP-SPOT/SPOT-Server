@@ -7,6 +7,7 @@ import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.api.user.dto.request.NicknameRequest;
 import com.spot.spotserver.api.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,5 +60,12 @@ public class UserService {
         // 새로운 리프레시 토큰으로 교체
         refreshTokenService.saveRefreshToken(userId, newRefreshToken);
         return TokenResponse.of(newAccessToken, newRefreshToken);
+    }
+
+    public String registerNickname(NicknameRequest nicknameRequest, User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        user.setNickname(nicknameRequest.nickname());
+        userRepository.save(user);
+        return nicknameRequest.nickname();
     }
 }
