@@ -22,7 +22,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return methodParameter.hasMethodAnnotation(CurrentUser.class);
+        return methodParameter.hasParameterAnnotation(CurrentUser.class);
     }
 
     @Override
