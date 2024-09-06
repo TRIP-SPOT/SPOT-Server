@@ -15,7 +15,8 @@ public enum SuccessCode {
     GET_SPOT_SUCCESS(OK, "촬영지 조회에 성공하였습니다."),
     LOGIN_SUCCESS(OK, "로그인에 성공하였습니다"),
     REISSUE_TOKEN_SUCCESS(OK, "토큰 재발급에 성공하였습니다."),
-    REGISTER_NICKNAME_SUCCESS(OK, "닉네임이 정상적으로 설정되었습니다.");
+    REGISTER_NICKNAME_SUCCESS(OK, "닉네임이 정상적으로 설정되었습니다."),
+    UPDATE_NICKNAME_SUCCESS(OK, "닉네임이 정상적으로 변경되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

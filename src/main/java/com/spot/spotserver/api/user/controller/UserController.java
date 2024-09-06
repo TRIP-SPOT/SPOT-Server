@@ -8,10 +8,7 @@ import com.spot.spotserver.common.annotation.CurrentUser;
 import com.spot.spotserver.common.payload.ApiResponse;
 import com.spot.spotserver.common.payload.SuccessCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +20,16 @@ public class UserController {
     @PostMapping("/nickname")
     public ApiResponse registerNickname(@RequestBody NicknameRequest request,
                                         @CurrentUser User user) {
-        String nickname = userService.registerNickname(request, user);
+        String nickname = userService.saveNickname(request, user);
         NicknameResponse result = new NicknameResponse(nickname);
-        return ApiResponse.success(SuccessCode.LOGIN_SUCCESS, result);
+        return ApiResponse.success(SuccessCode.REGISTER_NICKNAME_SUCCESS, result);
+    }
+
+    @PatchMapping("/nickname")
+    public ApiResponse updateNickname(@RequestBody NicknameRequest request,
+                                      @CurrentUser User user) {
+        String nickname = userService.saveNickname(request, user);
+        NicknameResponse result = new NicknameResponse(nickname);
+        return ApiResponse.success(SuccessCode.UPDATE_NICKNAME_SUCCESS, result);
     }
 }

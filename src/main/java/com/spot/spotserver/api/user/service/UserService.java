@@ -62,7 +62,7 @@ public class UserService {
         return TokenResponse.of(newAccessToken, newRefreshToken);
     }
 
-    public String registerNickname(NicknameRequest nicknameRequest, User user) {
+    public String saveNickname(NicknameRequest nicknameRequest, User user) {
         userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
         user.setNickname(nicknameRequest.nickname());
         userRepository.save(user);
