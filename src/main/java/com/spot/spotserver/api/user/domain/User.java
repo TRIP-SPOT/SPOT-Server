@@ -34,4 +34,8 @@ public class User extends BaseEntity {
                 .socialId(socialId)
                 .build();
     }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
