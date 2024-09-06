@@ -9,7 +9,6 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,5 +33,9 @@ public class User extends BaseEntity {
                 .email(email)
                 .socialId(socialId)
                 .build();
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
