@@ -8,7 +8,7 @@ public enum Region {
     JEONBUK,
     JEONNAM,
     CHUNGBUK,
-    CHUNGANG,
+    CHUNGNAM,
     SEOUL,
     INCHEON,
     DAEGU,
