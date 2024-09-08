@@ -19,11 +19,13 @@ public class Record extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String title;
 
     private String description;
 
     private Region region;
+
+    private City city;
 
     private LocalDateTime startDate;
 
@@ -34,10 +36,11 @@ public class Record extends BaseEntity {
     private User user;
 
     @Builder
-    public Record(String name, String description, Region region, LocalDateTime startDate, LocalDateTime endDate, User user) {
-        this.name = name;
+    public Record(String title, String description, Region region, City city, LocalDateTime startDate, LocalDateTime endDate, User user) {
+        this.title = title;
         this.description = description;
         this.region = region;
+        this.city = city;
         this.startDate = startDate;
         this.endDate = endDate;
         this.user = user;

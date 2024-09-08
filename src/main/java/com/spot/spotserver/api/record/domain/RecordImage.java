@@ -16,16 +16,13 @@ public class RecordImage {
 
     private String url;
 
-    private Boolean isRepresentative;
-
     @ManyToOne
     @JoinColumn(name = "record_id")
     private Record record;
 
     @Builder
-    public RecordImage(String url, Boolean isRepresentative, Record record) {
+    public RecordImage(String url, Record record) {
         this.url = url;
-        this.isRepresentative = isRepresentative;
         this.record = record;
     }
 }
