@@ -67,8 +67,7 @@ public class AuthService {
         // 리프레시 토큰 레디스에 저장
         refreshTokenService.saveRefreshToken(userResponse.id(), jwtRefreshToken);
 
-        // JWT 액세스 토큰 및 리프레시 토큰을 클라이언트에 반환
-        return new TokenResponse(jwtAccessToken, jwtRefreshToken);
+        return processUser(userResponse);
     }
 
     private KakaoAccessTokenResponse getOAuth2Authentication(final String authorizationCode) {
