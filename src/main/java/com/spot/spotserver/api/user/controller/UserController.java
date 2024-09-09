@@ -44,4 +44,12 @@ public class UserController {
         ProfileResponse result = new ProfileResponse(profileUrl);
         return ApiResponse.success(SuccessCode.REGISTER_PROFILE_SUCCESS, result);
     }
+
+    @PatchMapping("/profile")
+    public ApiResponse<ProfileResponse> updateProfile(@ModelAttribute ProfileRequest request,
+                                                      @CurrentUser User user) throws IOException {
+        String profileUrl = userService.saveProfile(request, user);
+        ProfileResponse result = new ProfileResponse(profileUrl);
+        return ApiResponse.success(SuccessCode.UPDATE_PROFILE_SUCCESS, result);
+    }
 }
