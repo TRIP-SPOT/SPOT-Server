@@ -51,15 +51,15 @@ jobs:
           name: build-artifacts
 
       - name: Install SSH client
-        run: sudo apt-get install -y openssh-client sshpass
+        run: sudo apt-get install -y openssh-client
 
       - name: SCP JAR to EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/ubuntu/app/
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY_DEV }} build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/ubuntu/app/
 
       - name: Deploy application on EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY_DEV }} ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
             sudo systemctl start redis-server
             sudo fuser -k -n tcp 8080 || true
             sleep 10
