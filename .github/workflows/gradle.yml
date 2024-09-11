@@ -40,41 +40,49 @@ jobs:
             build/libs/*.jar
 
   deploy:
-    name: CD with SCP and SSH
     needs: build
+    name: Deploy
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Download build artifacts
+      - name: Download Build artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
+          path: build/libs/
 
-      - name: Install sshpass and SSH client
+      - name: Setup SSH
         run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass openssh-client
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_KEY_DEV }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST_DEV }} >> ~/.ssh/known_hosts
 
-      - name: SCP JAR to EC2
+      - name: Deploy to EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/ubuntu/app/
-
-      - name: Deploy application on EC2
-        run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
+          scp -o StrictHostKeyChecking=no build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
+          ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} "bash -l -c '
+            # Start Redis server
             sudo systemctl start redis-server
-            sudo fuser -k -n tcp 8080 || true
+
+            # Ensure no other process is using the port
+            sudo fuser -k -n tcp 8080
+
+            # Wait for a moment to ensure Redis and port are ready
             sleep 10
-            
-            # 환경 변수를 사용해 애플리케이션 실행
-            sudo nohup java -jar /home/ubuntu/app/*.jar \
+
+            # Kill any existing Java processes
+            pgrep java | xargs kill -9
+
+            # Run the new Java application with environment variables
+            nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar \
               --spring.datasource.url=${{ secrets.RDS_URL }} \
               --spring.datasource.username=${{ secrets.RDS_USERNAME }} \
               --spring.datasource.password=${{ secrets.RDS_PASSWORD }} \
               --cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }} \
               --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
-              --jwt.secret=${{ secrets.JWT_SECRET }} \
-              > /home/ubuntu/app/nohup.out 2>&1 &
-            
+              > /home/${{ secrets.EC2_USER_DEV }}/nohup.out 2>&1 &
+
+            # Check if the application is running on the expected port
             sudo lsof -i tcp:8080
-          EOF
+          '"
