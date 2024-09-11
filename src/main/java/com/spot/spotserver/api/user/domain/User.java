@@ -42,4 +42,8 @@ public class User extends BaseEntity {
     public void setProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
     }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }
