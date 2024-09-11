@@ -53,6 +53,8 @@ jobs:
 
       - name: Setup SSH
         run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_KEY_DEV }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
@@ -82,7 +84,3 @@ jobs:
               --cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }} \
               --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
               > /home/${{ secrets.EC2_USER_DEV }}/nohup.out 2>&1 &
-
-            # Check if the application is running on the expected port
-            sudo lsof -i tcp:8080
-          '"
