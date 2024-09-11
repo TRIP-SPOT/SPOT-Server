@@ -62,6 +62,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
+          ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} "echo 'SSH connection successful'"
           ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} "bash -s" <<EOF
             # Start Redis server
             sudo systemctl start redis-server
@@ -93,3 +94,4 @@ jobs:
             # Check if the application is running on the expected port
             sudo lsof -i tcp:8080
           EOF
+
