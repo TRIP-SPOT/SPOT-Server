@@ -62,8 +62,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          scp -o StrictHostKeyChecking=no build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
-          ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} "bash -l -c '
+          ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} "bash -s" <<EOF
             # Start Redis server
             sudo systemctl start redis-server
 
@@ -75,6 +74,12 @@ jobs:
 
             # Kill any existing Java processes
             pgrep java | xargs kill -9
+
+            # Remove old JAR if exists
+            rm -f /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar
+
+            # Upload new JAR
+            scp -o StrictHostKeyChecking=no build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
 
             # Run the new Java application with environment variables
             nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar \
