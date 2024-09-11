@@ -7,6 +7,7 @@ import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
 import com.spot.spotserver.api.user.dto.request.ProfileRequest;
 import com.spot.spotserver.api.user.repository.UserRepository;
@@ -79,5 +80,12 @@ public class UserService {
         user.setProfileUrl(profileUrl);
         userRepository.save(user);
         return profileUrl;
+    }
+
+    public String saveColor(ColorRequest colorRequest, User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        user.setColor(colorRequest.colorCode());
+        userRepository.save(user);
+        return colorRequest.colorCode();
     }
 }
