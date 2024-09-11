@@ -40,7 +40,7 @@ jobs:
             build/libs/*.jar
 
   deploy:
-    name: CD with SSH
+    name: CD with SCP and SSH
     needs: build
     runs-on: ubuntu-22.04
 
@@ -50,29 +50,20 @@ jobs:
         with:
           name: build-artifacts
 
-      # JAR 파일을 EC2에 배포
-      - name: SCP JAR to EC2
-        uses: appleboy/scp-action@master
-        with:
-          key: ${{ secrets.EC2_KEY_DEV }}
-          host: ${{ secrets.EC2_HOST_DEV }}
-          username: ${{ secrets.EC2_USER_DEV }}
-          source: "*.jar"
-          target: "/home/ubuntu/app"
-          debug: true
+      - name: Install SSH client
+        run: sudo apt-get install -y openssh-client sshpass
 
-      # EC2에서 애플리케이션 실행 시 환경 변수 설정
-      - name: Deploy SSH
-        uses: appleboy/ssh-action@master
-        with:
-          key: ${{ secrets.EC2_KEY_DEV }}
-          host: ${{ secrets.EC2_HOST_DEV }}
-          username: ${{ secrets.EC2_USER_DEV }}
-          script: |
+      - name: SCP JAR to EC2
+        run: |
+          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/*.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/ubuntu/app/
+
+      - name: Deploy application on EC2
+        run: |
+          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
             sudo systemctl start redis-server
-            sudo fuser -k -n tcp 8080
+            sudo fuser -k -n tcp 8080 || true
             sleep 10
-             
+            
             # 환경 변수를 사용해 애플리케이션 실행
             sudo nohup java -jar /home/ubuntu/app/*.jar \
               --spring.datasource.url=${{ secrets.RDS_URL }} \
@@ -82,5 +73,6 @@ jobs:
               --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
               --jwt.secret=${{ secrets.JWT_SECRET }} \
               > /home/ubuntu/app/nohup.out 2>&1 &
-              
+            
             sudo lsof -i tcp:8080
+          EOF
