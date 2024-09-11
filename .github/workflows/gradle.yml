@@ -80,6 +80,7 @@ jobs:
               --spring.datasource.password=${{ secrets.RDS_PASSWORD }} \
               --cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }} \
               --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
+              --jwt.secret=${{ secrets.JWT_SECRET }} \
               > /home/ubuntu/app/nohup.out 2>&1 &
               
             sudo lsof -i tcp:8080
