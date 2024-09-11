@@ -52,7 +52,7 @@ jobs:
       - name: Setup SSH
         run: |
           sudo apt-get update
-          sudo apt-get install -y openssh-client sshpass
+          sudo apt-get install -y openssh-client
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_KEY_DEV }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
@@ -60,11 +60,11 @@ jobs:
 
       - name: Upload new JAR to EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
 
       - name: Execute commands on EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
             # Set PATH if needed
             export PATH=/usr/bin:/bin:/sbin:/usr/sbin
 
