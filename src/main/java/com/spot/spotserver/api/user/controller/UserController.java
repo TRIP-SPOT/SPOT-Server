@@ -62,4 +62,12 @@ public class UserController {
         ColorResponse result = new ColorResponse(color);
         return ApiResponse.success(SuccessCode.REGISTER_COLOR_SUCCESS, result);
     }
+
+    @PatchMapping("/color")
+    public ApiResponse<ColorResponse> updateColor(@RequestBody ColorRequest request,
+                                                  @CurrentUser User user) {
+        String color = userService.saveColor(request, user);
+        ColorResponse result = new ColorResponse(color);
+        return ApiResponse.success(SuccessCode.UPDATE_COLOR_SUCCESS, result);
+    }
 }
