@@ -60,11 +60,11 @@ jobs:
 
       - name: Upload new JAR to EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/
+          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
 
       - name: Execute commands on EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
+          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
             # Set PATH if needed
             export PATH=/usr/bin:/bin:/sbin:/usr/sbin
 
@@ -81,16 +81,16 @@ jobs:
             pgrep java | xargs kill -9
 
             # Remove old JAR if exists
-            rm -f /home/${{ secrets.EC2_USERNAME }}/spotserver-0.0.1-SNAPSHOT.jar
+            rm -f /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar
 
             # Run the new Java application with environment variables
-            nohup java -jar /home/${{ secrets.EC2_USERNAME }}/spotserver-0.0.1-SNAPSHOT.jar \
+            nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar \
               --spring.datasource.url=${{ secrets.RDS_URL }} \
               --spring.datasource.username=${{ secrets.RDS_USERNAME }} \
               --spring.datasource.password=${{ secrets.RDS_PASSWORD }} \
               --cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }} \
               --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
-              > /home/${{ secrets.EC2_USERNAME }}/nohup.out 2>&1 &
+              > /home/${{ secrets.EC2_USER_DEV }}/nohup.out 2>&1 &
 
             # Check if the application is running on the expected port
             sudo lsof -i tcp:8080
