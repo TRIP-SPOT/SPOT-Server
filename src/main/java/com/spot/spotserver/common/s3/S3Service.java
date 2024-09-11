@@ -13,7 +13,8 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 @Slf4j
@@ -36,7 +37,7 @@ public class S3Service {
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
+        removeTempFile(uploadFile);
         return uploadImageUrl;
     }
 
@@ -57,23 +58,34 @@ public class S3Service {
         }
     }
 
-    private void removeNewFile(File targetFile) {
+    private void removeTempFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
+            log.info("로컬 임시 파일이 삭제되었습니다.");
         } else {
-            log.info("파일이 삭제되지 못했습니다.");
+            log.info("로컬 임시 파일이 삭제되지 못했습니다.");
         }
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        if(convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isBlank()) {
+            log.error("MultipartFile의 파일 이름이 null이거나 빈 문자열입니다.");
+            return Optional.empty();
         }
+        // 특수 문자 제거
+        String safeFileName = originalFilename.replaceAll("[\\\\/:*?\"<>|]", "_");
 
-        return Optional.empty();
+        // 임시 파일 생성
+        Path tempFilePath = Files.createTempFile(null, safeFileName);
+        File convertFile = tempFilePath.toFile();
+
+        try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+            fos.write(file.getBytes());
+        } catch (IOException e) {
+            log.error("파일 쓰기 실패: {}", e.getMessage(), e);
+            Files.deleteIfExists(tempFilePath); // 예외 발생 시 임시 파일 삭제
+            throw e;
+        }
+        return Optional.of(convertFile);
     }
 }

@@ -1,0 +1,98 @@
+name: Java CI/CD with Gradle
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Upload Build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            build/libs/*.jar
+
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Download Build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/libs/
+
+      - name: Setup SSH
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_KEY_DEV }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST_DEV }} >> ~/.ssh/known_hosts
+
+      - name: Upload new JAR to EC2
+        shell: bash
+        run: |
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
+
+      - name: Execute commands on EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
+            # Set PATH if needed
+            export PATH=/usr/bin:/bin:/sbin:/usr/sbin
+
+            # Start Redis server
+            sudo systemctl start redis-server
+
+            # Ensure no other process is using the port
+            sudo fuser -k -n tcp 8080
+
+            # Wait for a moment to ensure Redis and port are ready
+            sleep 10
+
+            # Kill any existing Java processes
+            pgrep java | xargs kill -9
+
+            # Remove old JAR if exists
+            rm -f /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar
+
+            # Run the new Java application with environment variables
+            nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar \
+              --spring.datasource.url=${{ secrets.RDS_URL }} \
+              --spring.datasource.username=${{ secrets.RDS_USERNAME }} \
+              --spring.datasource.password=${{ secrets.RDS_PASSWORD }} \
+              --cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }} \
+              --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
+              > /home/${{ secrets.EC2_USER_DEV }}/nohup.out 2>&1 &
+
+            # Check if the application is running on the expected port
+            sudo lsof -i tcp:8080
+          EOF
