@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload new JAR to EC2
         run: |
-          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/sanbosillokserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/
+          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/
 
       - name: Execute commands on EC2
         run: |
