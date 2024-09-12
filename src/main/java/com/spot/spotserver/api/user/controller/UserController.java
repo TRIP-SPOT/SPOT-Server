@@ -7,6 +7,7 @@ import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
 import com.spot.spotserver.api.user.dto.response.ColorResponse;
 import com.spot.spotserver.api.user.dto.response.NicknameResponse;
 import com.spot.spotserver.api.user.dto.response.ProfileImageResponse;
+import com.spot.spotserver.api.user.dto.response.ProfileResponse;
 import com.spot.spotserver.api.user.service.UserService;
 import com.spot.spotserver.common.annotation.CurrentUser;
 import com.spot.spotserver.common.payload.ApiResponse;
@@ -76,5 +77,11 @@ public class UserController {
         String color = userService.saveColor(request, user);
         ColorResponse result = new ColorResponse(color);
         return ApiResponse.success(SuccessCode.UPDATE_COLOR_SUCCESS, result);
+    }
+
+    @GetMapping("/profile")
+    public ApiResponse<ProfileResponse> getProfile(@CurrentUser User user) {
+        ProfileResponse result = userService.getProfile(user);
+        return ApiResponse.success(SuccessCode.GET_PROFILE_SUCCESS, result);
     }
 }
