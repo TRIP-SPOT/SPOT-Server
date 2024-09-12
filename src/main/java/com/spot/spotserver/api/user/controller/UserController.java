@@ -1,8 +1,10 @@
 package com.spot.spotserver.api.user.controller;
 
 import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
 import com.spot.spotserver.api.user.dto.request.ProfileRequest;
+import com.spot.spotserver.api.user.dto.response.ColorResponse;
 import com.spot.spotserver.api.user.dto.response.NicknameResponse;
 import com.spot.spotserver.api.user.dto.response.ProfileResponse;
 import com.spot.spotserver.api.user.service.UserService;
@@ -37,6 +39,13 @@ public class UserController {
         return ApiResponse.success(SuccessCode.UPDATE_NICKNAME_SUCCESS, result);
     }
 
+    @GetMapping("/nickname")
+    public ApiResponse<NicknameResponse> getNickname(@CurrentUser User user) {
+        String nickname = userService.getNickname(user);
+        NicknameResponse result = new NicknameResponse(nickname);
+        return ApiResponse.success(SuccessCode.GET_NICKNAME_SUCCESS, result);
+    }
+
     @PostMapping("/profile")
     public ApiResponse<ProfileResponse> registerProfile(@ModelAttribute ProfileRequest request,
                                                         @CurrentUser User user) throws IOException {
@@ -51,5 +60,21 @@ public class UserController {
         String profileUrl = userService.saveProfile(request, user);
         ProfileResponse result = new ProfileResponse(profileUrl);
         return ApiResponse.success(SuccessCode.UPDATE_PROFILE_SUCCESS, result);
+    }
+
+    @PostMapping("/color")
+    public ApiResponse<ColorResponse> registerColor(@RequestBody ColorRequest request,
+                                                    @CurrentUser User user) {
+        String color = userService.saveColor(request, user);
+        ColorResponse result = new ColorResponse(color);
+        return ApiResponse.success(SuccessCode.REGISTER_COLOR_SUCCESS, result);
+    }
+
+    @PatchMapping("/color")
+    public ApiResponse<ColorResponse> updateColor(@RequestBody ColorRequest request,
+                                                  @CurrentUser User user) {
+        String color = userService.saveColor(request, user);
+        ColorResponse result = new ColorResponse(color);
+        return ApiResponse.success(SuccessCode.UPDATE_COLOR_SUCCESS, result);
     }
 }
