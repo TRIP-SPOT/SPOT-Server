@@ -29,4 +29,9 @@ public class RecordImageService {
         this.recordImageRepository.save(newRecordImage);
         return imageUrl;
     }
+
+    public String getRegionalThumbnailImage(Record record) {
+        RecordImage thumbnailImage = this.recordImageRepository.findFirstByRecordOrderByIdAsc(record).orElseThrow();
+        return thumbnailImage.getUrl();
+    }
 }

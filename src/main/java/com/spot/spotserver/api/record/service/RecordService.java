@@ -1,8 +1,10 @@
 package com.spot.spotserver.api.record.service;
 
 import com.spot.spotserver.api.record.domain.Record;
+import com.spot.spotserver.api.record.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
+import com.spot.spotserver.api.record.dto.RegionalRecordResponse;
 import com.spot.spotserver.api.record.repository.RecordRepository;
 import com.spot.spotserver.api.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +45,12 @@ public class RecordService {
         }).toList();
 
         return new RecordResponse (newRecord, imageUrls);
+    }
+
+    public List<RegionalRecordResponse> getRegionalRecord(Region region) {
+        List<Record> records = this.recordRepository.findAllByRegion(region);
+        return records.stream()
+                .map((record) -> new RegionalRecordResponse(record, this.recordImageService.getRegionalThumbnailImage(record)))
+                .toList();
     }
 }
