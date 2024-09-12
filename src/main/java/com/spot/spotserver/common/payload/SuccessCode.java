@@ -18,7 +18,8 @@ public enum SuccessCode {
     REGISTER_NICKNAME_SUCCESS(OK, "닉네임이 정상적으로 설정되었습니다."),
     UPDATE_NICKNAME_SUCCESS(OK, "닉네임이 정상적으로 변경되었습니다."),
     REGISTER_PROFILE_SUCCESS(OK, "프로필 이미지가 정상적으로 설정되었습니다."),
-    UPDATE_PROFILE_SUCCESS(OK, "프로필 이미지가 정상적으로 변경되었습니다.");
+    UPDATE_PROFILE_SUCCESS(OK, "프로필 이미지가 정상적으로 변경되었습니다."),
+    CREATE_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 생성되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
