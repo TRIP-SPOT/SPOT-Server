@@ -97,4 +97,14 @@ public class UserService {
         userRepository.save(user);
         return colorRequest.colorCode();
     }
+
+    public ProfileResponse getProfile(User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        if (Objects.isNull(user.getProfileUrl())) {
+            return new ProfileResponse(null, user.getColor(), user.getNickname());
+        }
+        else {
+            return new ProfileResponse(user.getProfileUrl(), null, null);
+        }
+    }
 }
