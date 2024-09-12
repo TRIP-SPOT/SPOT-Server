@@ -74,6 +74,11 @@ public class UserService {
         return nicknameRequest.nickname();
     }
 
+    public String getNickname(User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        return user.getNickname();
+    }
+
     public String saveProfile(ProfileRequest profileRequest, User user) throws IOException {
         userRepository.findById(user.getId()).orElseThrow(()-> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
         String profileUrl = s3Service.upload(profileRequest.profileImage(), user.getNickname());

@@ -39,6 +39,13 @@ public class UserController {
         return ApiResponse.success(SuccessCode.UPDATE_NICKNAME_SUCCESS, result);
     }
 
+    @GetMapping("/nickname")
+    public ApiResponse<NicknameResponse> getNickname(@CurrentUser User user) {
+        String nickname = userService.getNickname(user);
+        NicknameResponse result = new NicknameResponse(nickname);
+        return ApiResponse.success(SuccessCode.GET_NICKNAME_SUCCESS, result);
+    }
+
     @PostMapping("/profile")
     public ApiResponse<ProfileResponse> registerProfile(@ModelAttribute ProfileRequest request,
                                                         @CurrentUser User user) throws IOException {
