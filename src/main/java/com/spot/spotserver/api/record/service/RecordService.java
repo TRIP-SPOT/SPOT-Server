@@ -5,6 +5,7 @@ import com.spot.spotserver.api.record.domain.RecordImage;
 import com.spot.spotserver.api.record.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
+import com.spot.spotserver.api.record.dto.RecordUpdateRequest;
 import com.spot.spotserver.api.record.dto.RegionalRecordResponse;
 import com.spot.spotserver.api.record.repository.RecordRepository;
 import com.spot.spotserver.api.user.domain.User;
@@ -57,7 +58,23 @@ public class RecordService {
 
     public RecordResponse getRecord(Long id) {
         Record record = this.recordRepository.findById(id).orElseThrow();
-        List<String> images = this.recordImageService.getImages(record);
+        List<String> images = this.recordImageService.getRecordImages(record);
         return new RecordResponse(record, images);
+    }
+
+    public void updateRecord(Long id, RecordUpdateRequest recordUpdateRequest, List<MultipartFile> images, User user) {
+        Record updateRecord = this.recordRepository.findById(id).orElseThrow();
+        updateRecord.updateTitle(recordUpdateRequest.getTitle());
+        updateRecord.updateDescription(recordUpdateRequest.getDescription());
+
+        recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImage);
+
+        images.forEach((image) -> {
+            try {
+                recordImageService.createRecordImage(image, updateRecord, user);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
