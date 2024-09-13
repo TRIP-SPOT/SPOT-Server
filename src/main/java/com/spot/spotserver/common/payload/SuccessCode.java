@@ -22,6 +22,7 @@ public enum SuccessCode {
     UPDATE_PROFILE_SUCCESS(OK, "프로필 이미지가 정상적으로 변경되었습니다."),
     CREATE_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 생성되었습니다."),
     GET_REGIONAL_RECORDS_SUCCESS(OK, "지역별 기록이 정상적으로 조회되었습니다."),
+    GET_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 조회되었습니다."),
     REGISTER_COLOR_SUCCESS(OK, "배경색이 정상적으로 설정되었습니다."),
     UPDATE_COLOR_SUCCESS(OK, "배경색이 정상적으로 변경되었습니다.");
 
