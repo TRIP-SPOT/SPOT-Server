@@ -30,9 +30,15 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.CREATE_RECORD_SUCCESS, recordResponse);
     }
 
-    @GetMapping("/{regionNumber}")
+    @GetMapping("/region/{regionNumber}")
     public ApiResponse<List<RegionalRecordResponse>> getRegionalRecords(@PathVariable int regionNumber) {
         List<RegionalRecordResponse> regionalRecordResponse = this.recordService.getRegionalRecord(Region.values()[regionNumber]);
         return ApiResponse.success(SuccessCode.GET_REGIONAL_RECORDS_SUCCESS, regionalRecordResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<RecordResponse> getRecord(@PathVariable Long id) {
+        RecordResponse recordResponse = this.recordService.getRecord(id);
+        return ApiResponse.success(SuccessCode.GET_RECORD_SUCCESS, recordResponse);
     }
 }

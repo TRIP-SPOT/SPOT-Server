@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +34,10 @@ public class RecordImageService {
     public String getRegionalThumbnailImage(Record record) {
         RecordImage thumbnailImage = this.recordImageRepository.findFirstByRecordOrderByIdAsc(record).orElseThrow();
         return thumbnailImage.getUrl();
+    }
+
+    public List<String> getImages(Record record) {
+        List<RecordImage> recordImages = this.recordImageRepository.findAllByRecord(record);
+        return recordImages.stream().map((RecordImage::getUrl)).toList();
     }
 }

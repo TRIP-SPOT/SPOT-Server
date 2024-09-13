@@ -1,6 +1,7 @@
 package com.spot.spotserver.api.record.service;
 
 import com.spot.spotserver.api.record.domain.Record;
+import com.spot.spotserver.api.record.domain.RecordImage;
 import com.spot.spotserver.api.record.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
@@ -52,5 +53,11 @@ public class RecordService {
         return records.stream()
                 .map((record) -> new RegionalRecordResponse(record, this.recordImageService.getRegionalThumbnailImage(record)))
                 .toList();
+    }
+
+    public RecordResponse getRecord(Long id) {
+        Record record = this.recordRepository.findById(id).orElseThrow();
+        List<String> images = this.recordImageService.getImages(record);
+        return new RecordResponse(record, images);
     }
 }
