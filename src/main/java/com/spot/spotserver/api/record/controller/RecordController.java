@@ -3,6 +3,7 @@ package com.spot.spotserver.api.record.controller;
 import com.spot.spotserver.api.record.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
+import com.spot.spotserver.api.record.dto.RecordUpdateRequest;
 import com.spot.spotserver.api.record.dto.RegionalRecordResponse;
 import com.spot.spotserver.api.record.service.RecordService;
 import com.spot.spotserver.api.user.domain.User;
@@ -40,5 +41,14 @@ public class RecordController {
     public ApiResponse<RecordResponse> getRecord(@PathVariable Long id) {
         RecordResponse recordResponse = this.recordService.getRecord(id);
         return ApiResponse.success(SuccessCode.GET_RECORD_SUCCESS, recordResponse);
+    }
+
+    @PatchMapping("/{id}")
+    public <T> ApiResponse<T> updateRecord(@PathVariable Long id,
+                                    @RequestPart RecordUpdateRequest recordUpdateRequest,
+                                    @RequestPart List<MultipartFile> addImages,
+                                    @CurrentUser User user) {
+        this.recordService.updateRecord(id, recordUpdateRequest, addImages, user);
+        return ApiResponse.success(SuccessCode.UPDATE_RECORD_SUCCESS);
     }
 }
