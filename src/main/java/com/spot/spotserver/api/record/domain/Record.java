@@ -45,4 +45,12 @@ public class Record extends BaseEntity {
         this.endDate = endDate;
         this.user = user;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
 }
