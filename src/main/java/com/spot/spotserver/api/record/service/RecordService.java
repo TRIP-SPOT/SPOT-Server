@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,19 +63,22 @@ public class RecordService {
         return new RecordResponse(record, images);
     }
 
-    public void updateRecord(Long id, RecordUpdateRequest recordUpdateRequest, List<MultipartFile> images, User user) {
+    @Transactional
+    public void updateRecord(Long id, RecordUpdateRequest recordUpdateRequest, Optional<List<MultipartFile>> addImages, User user) {
         Record updateRecord = this.recordRepository.findById(id).orElseThrow();
         updateRecord.updateTitle(recordUpdateRequest.getTitle());
         updateRecord.updateDescription(recordUpdateRequest.getDescription());
 
         recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImage);
 
-        images.forEach((image) -> {
-            try {
-                recordImageService.createRecordImage(image, updateRecord, user);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        addImages.ifPresent(images -> {
+            images.forEach(image -> {
+                try {
+                    recordImageService.createRecordImage(image, updateRecord, user);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         });
     }
 }
