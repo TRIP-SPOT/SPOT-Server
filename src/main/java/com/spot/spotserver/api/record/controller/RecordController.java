@@ -3,6 +3,7 @@ package com.spot.spotserver.api.record.controller;
 import com.spot.spotserver.api.record.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
+import com.spot.spotserver.api.record.dto.RecordUpdateRequest;
 import com.spot.spotserver.api.record.dto.RegionalRecordResponse;
 import com.spot.spotserver.api.record.service.RecordService;
 import com.spot.spotserver.api.user.domain.User;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,5 +42,14 @@ public class RecordController {
     public ApiResponse<RecordResponse> getRecord(@PathVariable Long id) {
         RecordResponse recordResponse = this.recordService.getRecord(id);
         return ApiResponse.success(SuccessCode.GET_RECORD_SUCCESS, recordResponse);
+    }
+
+    @PatchMapping("/{id}")
+    public <T> ApiResponse<T> updateRecord(@PathVariable Long id,
+                                    @RequestPart("recordUpdate") RecordUpdateRequest recordUpdateRequest,
+                                    @RequestPart("addImages") Optional<List<MultipartFile>> addImages,
+                                    @CurrentUser User user) {
+        this.recordService.updateRecord(id, recordUpdateRequest, addImages, user);
+        return ApiResponse.success(SuccessCode.UPDATE_RECORD_SUCCESS);
     }
 }

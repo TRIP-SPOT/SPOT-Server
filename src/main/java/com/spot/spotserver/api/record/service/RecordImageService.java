@@ -36,8 +36,12 @@ public class RecordImageService {
         return thumbnailImage.getUrl();
     }
 
-    public List<String> getImages(Record record) {
+    public List<String> getRecordImages(Record record) {
         List<RecordImage> recordImages = this.recordImageRepository.findAllByRecord(record);
         return recordImages.stream().map((RecordImage::getUrl)).toList();
+    }
+
+    public void deleteRecordImage(Long recordImageId) {
+        this.recordImageRepository.deleteById(recordImageId);
     }
 }
