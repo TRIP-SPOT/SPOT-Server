@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,8 +46,8 @@ public class RecordController {
 
     @PatchMapping("/{id}")
     public <T> ApiResponse<T> updateRecord(@PathVariable Long id,
-                                    @RequestPart RecordUpdateRequest recordUpdateRequest,
-                                    @RequestPart List<MultipartFile> addImages,
+                                    @RequestPart("recordUpdate") RecordUpdateRequest recordUpdateRequest,
+                                    @RequestPart("addImages") Optional<List<MultipartFile>> addImages,
                                     @CurrentUser User user) {
         this.recordService.updateRecord(id, recordUpdateRequest, addImages, user);
         return ApiResponse.success(SuccessCode.UPDATE_RECORD_SUCCESS);
