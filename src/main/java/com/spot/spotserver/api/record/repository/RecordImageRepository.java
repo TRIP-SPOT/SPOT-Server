@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface RecordImageRepository extends JpaRepository<RecordImage, Long> {
     Optional<RecordImage> findFirstByRecordOrderByIdAsc(Record record);
     List<RecordImage> findAllByRecord(Record record);
+    void deleteAllByRecord(Record record);
 }
