@@ -52,4 +52,10 @@ public class RecordController {
         this.recordService.updateRecord(id, recordUpdateRequest, addImages, user);
         return ApiResponse.success(SuccessCode.UPDATE_RECORD_SUCCESS);
     }
+
+    @DeleteMapping("/{id}")
+    public <T> ApiResponse<T> deleteRecord(@PathVariable Long id) {
+        this.recordService.deleteRecord(id);
+        return ApiResponse.success(SuccessCode.DELETE_RECORD_SUCCESS);
+    }
 }
