@@ -1,11 +1,9 @@
 package com.spot.spotserver.api.record.controller;
 
 import com.spot.spotserver.api.record.domain.Region;
-import com.spot.spotserver.api.record.dto.RecordRequest;
-import com.spot.spotserver.api.record.dto.RecordResponse;
-import com.spot.spotserver.api.record.dto.RecordUpdateRequest;
-import com.spot.spotserver.api.record.dto.RegionalRecordResponse;
+import com.spot.spotserver.api.record.dto.*;
 import com.spot.spotserver.api.record.service.RecordService;
+import com.spot.spotserver.api.record.service.RepresentativeImageService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.annotation.CurrentUser;
 import com.spot.spotserver.common.payload.ApiResponse;
@@ -15,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +22,7 @@ import java.util.Optional;
 @RequestMapping("/api/record")
 public class RecordController {
     private final RecordService recordService;
+    private final RepresentativeImageService representativeImageService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<RecordResponse> createRecord(@RequestPart("record") RecordRequest recordRequest,
@@ -57,5 +57,12 @@ public class RecordController {
     public <T> ApiResponse<T> deleteRecord(@PathVariable Long id) {
         this.recordService.deleteRecord(id);
         return ApiResponse.success(SuccessCode.DELETE_RECORD_SUCCESS);
+    }
+
+    @PostMapping("/representative")
+    public ApiResponse<RepresentativeImageResponse> createRepresentativeImage(@ModelAttribute RepresentativeImageRequest representativeImageRequest,
+                                                                              @CurrentUser User user) throws IOException {
+        RepresentativeImageResponse representativeImageResponse = this.representativeImageService.createRepresentativeImage(representativeImageRequest, user);
+        return ApiResponse.success(SuccessCode.CREATE_REPRESENTATIVE_IMAGE_SUCCESS, representativeImageResponse);
     }
 }
