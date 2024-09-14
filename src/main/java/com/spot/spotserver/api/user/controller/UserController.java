@@ -3,9 +3,10 @@ package com.spot.spotserver.api.user.controller;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
-import com.spot.spotserver.api.user.dto.request.ProfileRequest;
+import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
 import com.spot.spotserver.api.user.dto.response.ColorResponse;
 import com.spot.spotserver.api.user.dto.response.NicknameResponse;
+import com.spot.spotserver.api.user.dto.response.ProfileImageResponse;
 import com.spot.spotserver.api.user.dto.response.ProfileResponse;
 import com.spot.spotserver.api.user.service.UserService;
 import com.spot.spotserver.common.annotation.CurrentUser;
@@ -47,18 +48,18 @@ public class UserController {
     }
 
     @PostMapping("/profile")
-    public ApiResponse<ProfileResponse> registerProfile(@ModelAttribute ProfileRequest request,
-                                                        @CurrentUser User user) throws IOException {
+    public ApiResponse<ProfileImageResponse> registerProfile(@ModelAttribute ProfileImageRequest request,
+                                                             @CurrentUser User user) throws IOException {
         String profileUrl = userService.saveProfile(request, user);
-        ProfileResponse result = new ProfileResponse(profileUrl);
+        ProfileImageResponse result = new ProfileImageResponse(profileUrl);
         return ApiResponse.success(SuccessCode.REGISTER_PROFILE_SUCCESS, result);
     }
 
     @PatchMapping("/profile")
-    public ApiResponse<ProfileResponse> updateProfile(@ModelAttribute ProfileRequest request,
-                                                      @CurrentUser User user) throws IOException {
+    public ApiResponse<ProfileImageResponse> updateProfile(@ModelAttribute ProfileImageRequest request,
+                                                           @CurrentUser User user) throws IOException {
         String profileUrl = userService.saveProfile(request, user);
-        ProfileResponse result = new ProfileResponse(profileUrl);
+        ProfileImageResponse result = new ProfileImageResponse(profileUrl);
         return ApiResponse.success(SuccessCode.UPDATE_PROFILE_SUCCESS, result);
     }
 
@@ -76,5 +77,11 @@ public class UserController {
         String color = userService.saveColor(request, user);
         ColorResponse result = new ColorResponse(color);
         return ApiResponse.success(SuccessCode.UPDATE_COLOR_SUCCESS, result);
+    }
+
+    @GetMapping("/profile")
+    public ApiResponse<ProfileResponse> getProfile(@CurrentUser User user) {
+        ProfileResponse result = userService.getProfile(user);
+        return ApiResponse.success(SuccessCode.GET_PROFILE_SUCCESS, result);
     }
 }

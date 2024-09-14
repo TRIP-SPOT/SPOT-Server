@@ -9,13 +9,15 @@ import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
-import com.spot.spotserver.api.user.dto.request.ProfileRequest;
+import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
+import com.spot.spotserver.api.user.dto.response.ProfileResponse;
 import com.spot.spotserver.api.user.repository.UserRepository;
 import com.spot.spotserver.common.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -79,10 +81,11 @@ public class UserService {
         return user.getNickname();
     }
 
-    public String saveProfile(ProfileRequest profileRequest, User user) throws IOException {
+    public String saveProfile(ProfileImageRequest profileImageRequest, User user) throws IOException {
         userRepository.findById(user.getId()).orElseThrow(()-> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
-        String profileUrl = s3Service.upload(profileRequest.profileImage(), user.getNickname());
+        String profileUrl = s3Service.upload(profileImageRequest.profileImage(), user.getNickname());
         user.setProfileUrl(profileUrl);
+        user.setColor(null);
         userRepository.save(user);
         return profileUrl;
     }
@@ -90,7 +93,18 @@ public class UserService {
     public String saveColor(ColorRequest colorRequest, User user) {
         userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
         user.setColor(colorRequest.colorCode());
+        user.setProfileUrl(null);
         userRepository.save(user);
         return colorRequest.colorCode();
+    }
+
+    public ProfileResponse getProfile(User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        if (Objects.isNull(user.getProfileUrl())) {
+            return new ProfileResponse(null, user.getColor(), user.getNickname());
+        }
+        else {
+            return new ProfileResponse(user.getProfileUrl(), null, null);
+        }
     }
 }
