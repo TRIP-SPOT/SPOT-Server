@@ -69,7 +69,7 @@ public class RecordService {
         updateRecord.updateTitle(recordUpdateRequest.getTitle());
         updateRecord.updateDescription(recordUpdateRequest.getDescription());
 
-        recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImage);
+        recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImageById);
 
         addImages.ifPresent(images -> {
             images.forEach(image -> {
@@ -80,5 +80,12 @@ public class RecordService {
                 }
             });
         });
+    }
+
+    @Transactional
+    public void deleteRecord(Long id) {
+        Record deleteRecord = this.recordRepository.findById(id).orElseThrow();
+        this.recordRepository.deleteById(id);
+        this.recordImageService.deleteRecordImage(deleteRecord);
     }
 }
