@@ -41,7 +41,11 @@ public class RecordImageService {
         return recordImages.stream().map((RecordImage::getUrl)).toList();
     }
 
-    public void deleteRecordImage(Long recordImageId) {
+    public void deleteRecordImageById(Long recordImageId) {
         this.recordImageRepository.deleteById(recordImageId);
+    }
+
+    public void deleteRecordImage(Record record) {
+        this.recordImageRepository.deleteAllByRecord(record);
     }
 }
