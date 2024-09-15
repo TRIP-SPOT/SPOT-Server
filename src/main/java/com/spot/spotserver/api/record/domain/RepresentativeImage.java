@@ -29,4 +29,8 @@ public class RepresentativeImage {
         this.region = region;
         this.user = user;
     }
+
+    public void updateUrl(String url) {
+        this.url = url;
+    }
 }

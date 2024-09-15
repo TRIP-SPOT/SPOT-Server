@@ -71,4 +71,12 @@ public class RecordController {
         List<RepresentativeImageResponse> representativeImageResponses = this.representativeImageService.getRepresentativeImages();
         return ApiResponse.success(SuccessCode.GET_REPRESENTATIVE_IMAGE_SUCCESS, representativeImageResponses);
     }
+
+    @PatchMapping("/representative/{id}")
+    public <T> ApiResponse<T> updateRepresentativeImage(@PathVariable Long id,
+                                                        @RequestPart MultipartFile newImage,
+                                                        @CurrentUser User user) throws IOException {
+        this.representativeImageService.updateRepresentativeImage(id, newImage, user);
+        return ApiResponse.success(SuccessCode.UPDATE_REPRESENTATIVE_IMAGE_SUCCESS);
+    }
 }
