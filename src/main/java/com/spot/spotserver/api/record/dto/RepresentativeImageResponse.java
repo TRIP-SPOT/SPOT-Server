@@ -6,11 +6,14 @@ import lombok.Data;
 
 @Data
 public class RepresentativeImageResponse {
+    private Long id;
+
     private Region region;
 
     private String url;
 
     public RepresentativeImageResponse(RepresentativeImage representativeImage) {
+        this.id = representativeImage.getId();
         this.region = representativeImage.getRegion();
         this.url = representativeImage.getUrl();
     }

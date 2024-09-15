@@ -65,4 +65,10 @@ public class RecordController {
         RepresentativeImageResponse representativeImageResponse = this.representativeImageService.createRepresentativeImage(representativeImageRequest, user);
         return ApiResponse.success(SuccessCode.CREATE_REPRESENTATIVE_IMAGE_SUCCESS, representativeImageResponse);
     }
+
+    @GetMapping("/representative")
+    public ApiResponse<List<RepresentativeImageResponse>> getRepresentativeImages() {
+        List<RepresentativeImageResponse> representativeImageResponses = this.representativeImageService.getRepresentativeImages();
+        return ApiResponse.success(SuccessCode.GET_REPRESENTATIVE_IMAGE_SUCCESS, representativeImageResponses);
+    }
 }
