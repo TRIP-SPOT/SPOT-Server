@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +27,12 @@ public class RepresentativeImageService {
 
         RepresentativeImage savedRepresentativeImage = this.representativeImageRepository.save(newRepresentativeImage);
         return new RepresentativeImageResponse(savedRepresentativeImage);
+    }
+
+    public List<RepresentativeImageResponse> getRepresentativeImages() {
+        return this.representativeImageRepository.findAll()
+                .stream()
+                .map(RepresentativeImageResponse::new)
+                .toList();
     }
 }
