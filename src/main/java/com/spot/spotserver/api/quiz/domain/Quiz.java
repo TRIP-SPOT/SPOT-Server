@@ -1,15 +1,50 @@
 package com.spot.spotserver.api.quiz.domain;
 
+import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.common.domain.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "quiz")
+@Getter
+@NoArgsConstructor
 public class Quiz extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Region region;
+
+    private String question;
+
+    private String choice1;
+
+    private String choice2;
+
+    private String choice3;
+
+    private String choice4;
+
+    private Integer answer;
+
+    @ManyToOne
+    @JoinColumn(name = "spot_id")
+    private Spot spot;
+
+    @Builder
+    public Quiz(Long id, Region region, String question, String choice1, String choice2, String choice3, String choice4, Integer answer, Spot spot) {
+        this.id = id;
+        this.region = region;
+        this.question = question;
+        this.choice1 = choice1;
+        this.choice2 = choice2;
+        this.choice3 = choice3;
+        this.choice4 = choice4;
+        this.answer = answer;
+        this.spot = spot;
+    }
 }
