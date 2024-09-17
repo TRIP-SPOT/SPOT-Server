@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "quiz")
 @Getter
@@ -46,5 +48,9 @@ public class Quiz extends BaseEntity {
         this.choice4 = choice4;
         this.answer = answer;
         this.spot = spot;
+    }
+
+    public boolean isCorrect(Integer answer) {
+        return Objects.equals(this.answer, answer);
     }
 }
