@@ -2,8 +2,10 @@ package com.spot.spotserver.api.spot.domain;
 
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Spot extends BaseEntity {
 
     @Id

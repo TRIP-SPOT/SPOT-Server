@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.spot.controller;
 
+import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
 import com.spot.spotserver.api.spot.service.SpotService;
 import com.spot.spotserver.common.payload.ApiResponse;
@@ -21,5 +22,11 @@ public class SpotController {
     public ApiResponse<SpotDetailsResponse> getSpotDetails(@PathVariable Integer contentId) {
         SpotDetailsResponse result = spotService.getSpotDetails(contentId);
         return ApiResponse.success(SuccessCode.GET_SPOT_DETAIL_SUCCESS, result);
+    }
+
+    @GetMapping("/spot/{contentId}/arounds")
+    public ApiResponse<SpotAroundResponse> getSpotAroundList(@PathVariable Integer contentId) {
+        SpotAroundResponse result = spotService.getSpotAroundList(contentId);
+        return ApiResponse.success(SuccessCode.GET_SPOT_AROUND_SUCCESS, result);
     }
 }
