@@ -1,15 +1,15 @@
 package com.spot.spotserver.api.spot.controller;
 
+import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
 import com.spot.spotserver.api.spot.service.SpotService;
 import com.spot.spotserver.common.payload.ApiResponse;
 import com.spot.spotserver.common.payload.SuccessCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +23,12 @@ public class SpotController {
         SpotDetailsResponse result = spotService.getSpotDetails(contentId);
         return ApiResponse.success(SuccessCode.GET_SPOT_DETAIL_SUCCESS, result);
     }
+
+    @GetMapping("/spot")
+    public ApiResponse<List<AccessibleSpotResponse>> getAccessibleSpot(@RequestParam double latitude,
+                                                                       @RequestParam double longitude) {
+        List<AccessibleSpotResponse> accessibleSpotResponses = this.spotService.getAccessibleSpot(latitude, longitude);
+        return ApiResponse.success(SuccessCode.GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS, accessibleSpotResponses);
 
     @GetMapping("/spot/{contentId}/arounds")
     public ApiResponse<SpotAroundResponse> getSpotAroundList(@PathVariable Integer contentId) {

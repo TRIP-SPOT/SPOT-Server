@@ -21,7 +21,7 @@ public class QuizController {
 
     @GetMapping("/")
     public ApiResponse<QuizResponse> getQuiz(Long id) {
-        return ApiResponse.success(SuccessCode.GET_QUIZ_LIST_SUCCESS, this.quizService.getQuiz(id));
+        return ApiResponse.success(SuccessCode.GET_QUIZ_SUCCESS, this.quizService.getQuiz(id));
     }
 
     @PostMapping("/answer")
