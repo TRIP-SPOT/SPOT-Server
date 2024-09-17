@@ -41,6 +41,7 @@ dependencies {
 	//openfeign
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'io.github.openfeign:feign-micrometer'
+	implementation 'io.github.openfeign:feign-jackson:12.3'
 
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
