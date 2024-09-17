@@ -87,6 +87,7 @@ public class SpotService {
         double angularDistance = 2 * Math.atan2(Math.sqrt(haversineValue), Math.sqrt(1 - haversineValue));
 
         return EARTH_RADIUS * angularDistance;
+    }
       
     public SpotAroundResponse getSpotAroundList(Integer contentId) {
 

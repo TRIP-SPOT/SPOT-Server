@@ -29,6 +29,7 @@ public class SpotController {
                                                                        @RequestParam double longitude) {
         List<AccessibleSpotResponse> accessibleSpotResponses = this.spotService.getAccessibleSpot(latitude, longitude);
         return ApiResponse.success(SuccessCode.GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS, accessibleSpotResponses);
+    }
 
     @GetMapping("/spot/{contentId}/arounds")
     public ApiResponse<SpotAroundResponse> getSpotAroundList(@PathVariable Integer contentId) {
