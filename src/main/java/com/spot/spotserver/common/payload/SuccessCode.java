@@ -22,8 +22,6 @@ public enum SuccessCode {
     UPDATE_PROFILE_SUCCESS(OK, "프로필 이미지가 정상적으로 변경되었습니다."),
     REGISTER_COLOR_SUCCESS(OK, "배경색이 정상적으로 설정되었습니다."),
     UPDATE_COLOR_SUCCESS(OK, "배경색이 정상적으로 변경되었습니다."),
-      REGISTER_COLOR_SUCCESS(OK, "배경색이 정상적으로 설정되었습니다."),
-    UPDATE_COLOR_SUCCESS(OK, "배경색이 정상적으로 변경되었습니다."),
     GET_PROFILE_SUCCESS(OK,"프로필이 정상적으로 조회되었습니다."),
     CREATE_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 생성되었습니다."),
     GET_REGIONAL_RECORDS_SUCCESS(OK, "지역별 기록이 정상적으로 조회되었습니다."),
@@ -32,7 +30,9 @@ public enum SuccessCode {
     DELETE_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 삭제되었습니다."),
     CREATE_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 생성되었습니다."),
     GET_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 조회되었습니다."),
-    UPDATE_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 수정되었습니다.");
+    UPDATE_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 수정되었습니다."),
+    GET_QUIZ_LIST_SUCCESS(OK, "도전 가능 퀴즈 목록이 정상적으로 조회되었습니다."),
+    GET_QUIZ_RESULT_SUCCESS(OK, "퀴즈 정답 확인 결과가 정상적으로 조회되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
