@@ -13,10 +13,13 @@ public class AccessibleSpotResponse {
 
     private String address;
 
-    public AccessibleSpotResponse(Spot spot) {
+    private Long quizId;
+
+    public AccessibleSpotResponse(Spot spot, Long quizId) {
         this.workName = spot.getWork().getName();
         this.spotName = spot.getName();
         this.imageUrl = spot.getImageUrl();
         this.address = spot.getAddress();
+        this.quizId = quizId;
     }
 }

@@ -1,5 +1,7 @@
 package com.spot.spotserver.api.spot.service;
 
+import com.spot.spotserver.api.quiz.domain.Quiz;
+import com.spot.spotserver.api.quiz.repository.QuizRepository;
 import com.spot.spotserver.api.spot.client.CommonInfoClient;
 import com.spot.spotserver.api.spot.dto.response.CommonInfoResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
@@ -19,6 +21,7 @@ import java.util.List;
 public class SpotService {
     private final CommonInfoClient commonInfoClient;
     private final SpotRepository spotRepository;
+    private final QuizRepository quizRepository;
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
 
@@ -46,7 +49,10 @@ public class SpotService {
         return this.spotRepository.findAll()
                 .stream()
                 .filter((spot) -> this.isWithinAccessRadius(userLatitude, userLongitude, spot))
-                .map(AccessibleSpotResponse::new)
+                .map((spot) -> {
+                    Quiz quiz = this.quizRepository.findBySpot(spot).orElseThrow();
+                    return new AccessibleSpotResponse(spot, quiz.getId());
+                })
                 .toList();
     }
 
