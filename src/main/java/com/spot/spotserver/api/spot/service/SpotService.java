@@ -6,9 +6,8 @@ import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import com.spot.spotserver.api.spot.domain.Spot;
-import com.spot.spotserver.api.spot.dto.AccessibleSpotResponse;
+import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
 import com.spot.spotserver.api.spot.repository.SpotRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
