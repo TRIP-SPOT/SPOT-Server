@@ -13,9 +13,9 @@ public class RegionalRecordResponse {
 
     private String title;
 
-    private Region region;
+    private Integer region;
 
-    private City city;
+    private Integer city;
 
     private LocalDateTime startDate;
 
@@ -26,8 +26,8 @@ public class RegionalRecordResponse {
     public RegionalRecordResponse(Record record, String image) {
         this.id = record.getId();
         this.title = record.getTitle();
-        this.region = record.getRegion();
-        this.city = record.getCity();
+        this.region = record.getRegion().ordinal();
+        this.city = record.getCity().ordinal();
         this.startDate = record.getStartDate();
         this.endDate = record.getEndDate();
         this.image = image;
