@@ -34,7 +34,15 @@ public enum SuccessCode {
     GET_SPOT_DETAIL_SUCCESS(OK, "스팟 상세 정보가 정상적으로 조회되었습니다."),
     GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS(OK, "반경 20km 이내의 스팟 목록이 정상적으로 조회되었습니다."),
     GET_QUIZ_SUCCESS(OK, "퀴즈가 정상적으로 조회되었습니다."),
-    GET_QUIZ_RESULT_SUCCESS(OK, "퀴즈 정답 확인 결과가 정상적으로 조회되었습니다.");
+    GET_QUIZ_RESULT_SUCCESS(OK, "퀴즈 정답 확인 결과가 정상적으로 조회되었습니다."),
+    CREATE_SCHEDULE_SUCCESS(OK, "일정이 정상적으로 생성되었습니다."),
+    GET_SCHEDULE_LIST_SUCCESS(OK, "일정 목록이 정상적으로 조회되었습니다."),
+    GET_SCHEDULE_SUCCESS(OK, "상세 일정이 정상적으로 조회되었습니다."),
+    DELETE_SCHEDULE_SUCCESS(OK, "일정이 정상적으로 삭제되었습니다."),
+    UPDATE_SCHEDULE_DURATION_SUCCESS(OK, "여행 기간이 정상적으로 수정되었습니다."),
+    UPDATE_SCHEDULE_IMAGE_SUCCESS(OK, "일정 이미지가 정상적으로 수정되었습니다."),
+    ADD_LOCATION_SUCCESS(OK, "장소가 정상적으로 추가되었습니다."),
+    DELETE_LOCATIONS_SUCCESS(OK, "장소들이 정상적으로 삭제되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
