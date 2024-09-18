@@ -1,8 +1,7 @@
 package com.spot.spotserver.api.record.service;
 
 import com.spot.spotserver.api.record.domain.Record;
-import com.spot.spotserver.api.record.domain.RecordImage;
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
 import com.spot.spotserver.api.record.dto.RecordUpdateRequest;

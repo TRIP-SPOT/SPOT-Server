@@ -1,6 +1,6 @@
 package com.spot.spotserver.api.quiz.domain;
 
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;

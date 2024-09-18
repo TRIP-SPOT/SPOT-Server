@@ -1,6 +1,6 @@
 package com.spot.spotserver.api.record.controller;
 
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.record.dto.*;
 import com.spot.spotserver.api.record.service.RecordService;
 import com.spot.spotserver.api.record.service.RepresentativeImageService;

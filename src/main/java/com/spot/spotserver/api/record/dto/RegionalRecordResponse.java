@@ -1,8 +1,6 @@
 package com.spot.spotserver.api.record.dto;
 
-import com.spot.spotserver.api.record.domain.City;
 import com.spot.spotserver.api.record.domain.Record;
-import com.spot.spotserver.api.record.domain.Region;
 import lombok.Data;
 
 import java.time.LocalDateTime;

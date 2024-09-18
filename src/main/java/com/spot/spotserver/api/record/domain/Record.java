@@ -2,6 +2,8 @@ package com.spot.spotserver.api.record.domain;
 
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.domain.BaseEntity;
+import com.spot.spotserver.common.domain.City;
+import com.spot.spotserver.common.domain.Region;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
