@@ -1,6 +1,7 @@
 package com.spot.spotserver.api.spot.controller;
 
 import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
+import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
 import com.spot.spotserver.api.spot.service.SpotService;
 import com.spot.spotserver.common.payload.ApiResponse;
@@ -28,5 +29,11 @@ public class SpotController {
                                                                        @RequestParam double longitude) {
         List<AccessibleSpotResponse> accessibleSpotResponses = this.spotService.getAccessibleSpot(latitude, longitude);
         return ApiResponse.success(SuccessCode.GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS, accessibleSpotResponses);
+    }
+
+    @GetMapping("/spot/{contentId}/arounds")
+    public ApiResponse<SpotAroundResponse> getSpotAroundList(@PathVariable Integer contentId) {
+        SpotAroundResponse result = spotService.getSpotAroundList(contentId);
+        return ApiResponse.success(SuccessCode.GET_SPOT_AROUND_SUCCESS, result);
     }
 }

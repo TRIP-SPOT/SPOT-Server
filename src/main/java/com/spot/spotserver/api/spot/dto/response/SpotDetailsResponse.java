@@ -10,7 +10,7 @@ public record SpotDetailsResponse(
         String addr1,       // 주소
         String addr2,       // 상세주소
         String zipcode,     // 우편번호
-        String longtitude,
+        String longitude,
         String latitude,
         String overview
 ) {

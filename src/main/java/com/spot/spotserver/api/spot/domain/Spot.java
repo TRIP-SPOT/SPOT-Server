@@ -4,6 +4,7 @@ import com.spot.spotserver.common.domain.City;
 import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
