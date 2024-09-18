@@ -2,8 +2,13 @@ package com.spot.spotserver.api.schedule.domain;
 
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name="location")
+@Getter
+@NoArgsConstructor
 public class Location extends BaseEntity {
 
     @Id
@@ -11,6 +16,8 @@ public class Location extends BaseEntity {
     private Long id;
 
     private String name;
+
+    private String description;
 
     private LocationType type;
 

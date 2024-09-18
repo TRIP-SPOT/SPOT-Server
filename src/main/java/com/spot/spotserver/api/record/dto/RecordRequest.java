@@ -1,8 +1,7 @@
 package com.spot.spotserver.api.record.dto;
 
-import com.spot.spotserver.api.record.domain.City;
-import com.spot.spotserver.api.record.domain.Record;
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.City;
+import com.spot.spotserver.common.domain.Region;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

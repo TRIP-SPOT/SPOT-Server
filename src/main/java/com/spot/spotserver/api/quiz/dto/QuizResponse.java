@@ -1,7 +1,7 @@
 package com.spot.spotserver.api.quiz.dto;
 
 import com.spot.spotserver.api.quiz.domain.Quiz;
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.Region;
 import lombok.Data;
 
 @Data

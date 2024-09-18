@@ -1,7 +1,7 @@
 package com.spot.spotserver.api.quiz.repository;
 
 import com.spot.spotserver.api.quiz.domain.Badge;
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,6 +1,5 @@
 package com.spot.spotserver.api.record.dto;
 
-import com.spot.spotserver.api.record.domain.Region;
 import com.spot.spotserver.api.record.domain.RepresentativeImage;
 import lombok.Data;
 

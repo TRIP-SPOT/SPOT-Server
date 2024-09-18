@@ -1,6 +1,6 @@
 package com.spot.spotserver.api.record.dto;
 
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.Region;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
