@@ -5,6 +5,7 @@ import com.spot.spotserver.common.domain.BaseEntity;
 import com.spot.spotserver.common.domain.City;
 import com.spot.spotserver.common.domain.Region;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +34,15 @@ public class Schedule extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public Schedule(Long id, Region region, City city, LocalDate startDate, LocalDate endDate, String image, User user) {
+        this.id = id;
+        this.region = region;
+        this.city = city;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.image = image;
+        this.user = user;
+    }
 }
