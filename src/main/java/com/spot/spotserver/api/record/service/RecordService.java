@@ -1,6 +1,8 @@
 package com.spot.spotserver.api.record.service;
 
 import com.spot.spotserver.api.record.domain.Record;
+import com.spot.spotserver.api.record.exception.RecordImageProcessingException;
+import com.spot.spotserver.api.record.exception.RecordNotFoundException;
 import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.record.dto.RecordRequest;
 import com.spot.spotserver.api.record.dto.RecordResponse;
@@ -8,6 +10,7 @@ import com.spot.spotserver.api.record.dto.RecordUpdateRequest;
 import com.spot.spotserver.api.record.dto.RegionalRecordResponse;
 import com.spot.spotserver.api.record.repository.RecordRepository;
 import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.common.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +45,7 @@ public class RecordService {
             try {
                 return recordImageService.createRecordImage(image, newRecord, user);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);
             }
         }).toList();
 
@@ -57,14 +60,16 @@ public class RecordService {
     }
 
     public RecordResponse getRecord(Long id) {
-        Record record = this.recordRepository.findById(id).orElseThrow();
+        Record record = this.recordRepository.findById(id)
+                .orElseThrow(()-> new RecordNotFoundException(ErrorCode.RECORD_NOT_FOUND));
         List<String> images = this.recordImageService.getRecordImages(record);
         return new RecordResponse(record, images);
     }
 
     @Transactional
     public void updateRecord(Long id, RecordUpdateRequest recordUpdateRequest, Optional<List<MultipartFile>> addImages, User user) {
-        Record updateRecord = this.recordRepository.findById(id).orElseThrow();
+        Record updateRecord = this.recordRepository.findById(id)
+                .orElseThrow(()-> new RecordNotFoundException(ErrorCode.RECORD_NOT_FOUND));
         updateRecord.updateTitle(recordUpdateRequest.getTitle());
         updateRecord.updateDescription(recordUpdateRequest.getDescription());
 
@@ -75,7 +80,7 @@ public class RecordService {
                 try {
                     recordImageService.createRecordImage(image, updateRecord, user);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);
                 }
             });
         });
@@ -83,7 +88,8 @@ public class RecordService {
 
     @Transactional
     public void deleteRecord(Long id) {
-        Record deleteRecord = this.recordRepository.findById(id).orElseThrow();
+        Record deleteRecord = this.recordRepository.findById(id)
+                .orElseThrow(()-> new RecordNotFoundException(ErrorCode.RECORD_NOT_FOUND));
         this.recordRepository.deleteById(id);
         this.recordImageService.deleteRecordImage(deleteRecord);
     }
