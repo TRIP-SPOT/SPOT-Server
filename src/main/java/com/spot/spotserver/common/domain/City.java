@@ -1,4 +1,4 @@
-package com.spot.spotserver.api.record.domain;
+package com.spot.spotserver.common.domain;
 
 public enum City {
     // 특별,광역시

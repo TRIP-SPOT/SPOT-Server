@@ -1,5 +1,7 @@
 package com.spot.spotserver.api.spot.dto.response;
 
+import com.spot.spotserver.common.domain.City;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.spot.domain.Spot;
 import lombok.Data;
 
@@ -11,15 +13,18 @@ public class AccessibleSpotResponse {
 
     private String imageUrl;
 
-    private String address;
+    private Region region;
+
+    private City city;
 
     private Long quizId;
 
     public AccessibleSpotResponse(Spot spot, Long quizId) {
         this.workName = spot.getWork().getName();
         this.spotName = spot.getName();
-        this.imageUrl = spot.getImageUrl();
-        this.address = spot.getAddress();
+        this.imageUrl = spot.getWork().getPosterUrl();
+        this.region = spot.getRegion();
+        this.city = spot.getCity();
         this.quizId = quizId;
     }
 }

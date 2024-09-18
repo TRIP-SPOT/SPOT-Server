@@ -1,7 +1,7 @@
 package com.spot.spotserver.api.spot.domain;
 
-import com.spot.spotserver.api.record.domain.City;
-import com.spot.spotserver.api.record.domain.Region;
+import com.spot.spotserver.common.domain.City;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
 
@@ -23,9 +23,9 @@ public class Spot extends BaseEntity {
 
     private String name;
 
-    private String imageUrl;
+    private Region region;
 
-    private String address;
+    private City city;
 
     private Double longitude;
 
@@ -36,12 +36,12 @@ public class Spot extends BaseEntity {
     private Work work;
 
     @Builder
-    public Spot(Long id, Integer contentId, String name, String imageUrl, String address, Double longitude, Double latitude, Work work) {
+    public Spot(Long id, Integer contentId, String name, Region region, City city, Double longitude, Double latitude, Work work) {
         this.id = id;
         this.contentId = contentId;
         this.name = name;
-        this.imageUrl = imageUrl;
-        this.address = address;
+        this.region = region;
+        this.city = city;
         this.longitude = longitude;
         this.latitude = latitude;
         this.work = work;
