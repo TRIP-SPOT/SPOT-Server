@@ -32,6 +32,7 @@ public enum SuccessCode {
     GET_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 조회되었습니다."),
     UPDATE_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 수정되었습니다."),
     GET_SPOT_DETAIL_SUCCESS(OK, "스팟 상세 정보가 정상적으로 조회되었습니다."),
+    GET_SPOT_AROUND_SUCCESS(OK, "스팟 주변 장소 리스트가 정상적으로 조회되었습니다."),
     GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS(OK, "반경 20km 이내의 스팟 목록이 정상적으로 조회되었습니다."),
     GET_QUIZ_SUCCESS(OK, "퀴즈가 정상적으로 조회되었습니다."),
     GET_QUIZ_RESULT_SUCCESS(OK, "퀴즈 정답 확인 결과가 정상적으로 조회되었습니다."),

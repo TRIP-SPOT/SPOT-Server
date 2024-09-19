@@ -1,5 +1,8 @@
 package com.spot.spotserver.common.s3;
 
+import com.spot.spotserver.common.payload.ErrorCode;
+import com.spot.spotserver.common.s3.exception.FileConversionException;
+import com.spot.spotserver.common.s3.exception.S3UploadException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +32,7 @@ public class S3Service {
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
+                .orElseThrow(() -> new FileConversionException(ErrorCode.FILE_CONVERSION_FAILED));
 
         return upload(uploadFile, dirName);
     }
@@ -54,7 +57,7 @@ public class S3Service {
             return s3Client.utilities().getUrl(builder -> builder.bucket(bucket).key(fileName)).toExternalForm();
         } catch (S3Exception e) {
             log.error("S3에 파일 업로드 실패: {}", e.awsErrorDetails().errorMessage(), e);
-            throw e;
+            throw new S3UploadException(ErrorCode.S3_UPLOAD_FAILED);
         }
     }
 
@@ -84,7 +87,7 @@ public class S3Service {
         } catch (IOException e) {
             log.error("파일 쓰기 실패: {}", e.getMessage(), e);
             Files.deleteIfExists(tempFilePath); // 예외 발생 시 임시 파일 삭제
-            throw e;
+            throw new FileConversionException(ErrorCode.FILE_CONVERSION_FAILED);
         }
         return Optional.of(convertFile);
     }

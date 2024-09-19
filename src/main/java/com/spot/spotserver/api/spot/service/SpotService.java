@@ -3,25 +3,35 @@ package com.spot.spotserver.api.spot.service;
 import com.spot.spotserver.api.quiz.domain.Quiz;
 import com.spot.spotserver.api.quiz.repository.QuizRepository;
 import com.spot.spotserver.api.spot.client.CommonInfoClient;
+import com.spot.spotserver.api.spot.client.LocationBasedListClient;
+import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.api.spot.dto.response.CommonInfoResponse;
+import com.spot.spotserver.api.spot.dto.response.LocationBasedResponse;
+import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
+import com.spot.spotserver.api.spot.repository.SpotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
-import com.spot.spotserver.api.spot.repository.SpotRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class SpotService {
+  
     private final CommonInfoClient commonInfoClient;
+    private final LocationBasedListClient locationBasedListClient;
     private final SpotRepository spotRepository;
     private final QuizRepository quizRepository;
+  
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
 
@@ -77,5 +87,32 @@ public class SpotService {
         double angularDistance = 2 * Math.atan2(Math.sqrt(haversineValue), Math.sqrt(1 - haversineValue));
 
         return EARTH_RADIUS * angularDistance;
+    }
+      
+    public SpotAroundResponse getSpotAroundList(Integer contentId) {
+
+        Optional<Spot> spot = Optional.ofNullable(spotRepository.findByContentId(contentId).orElseThrow(() -> new IllegalArgumentException("해당하는 촬영지가 존재하지 않습니다.")));
+        Double longitude = spot.get().getLongitude();
+        Double latitude = spot.get().getLatitude();
+
+        LocationBasedResponse attractionResponse;
+        LocationBasedResponse restaurantResponse;
+        LocationBasedResponse accommodationResponse;
+
+        try {
+            attractionResponse = locationBasedListClient.getLocationBasedList(
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", "12", serviceKey
+            );
+            restaurantResponse = locationBasedListClient.getLocationBasedList(
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", "39", serviceKey
+            );
+            accommodationResponse = locationBasedListClient.getLocationBasedList(
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", "32", serviceKey
+            );
+        } catch (Exception e) {
+            return new SpotAroundResponse(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        }
+
+        return SpotAroundResponse.fromLocationBasedList(attractionResponse, restaurantResponse, accommodationResponse);
     }
 }
