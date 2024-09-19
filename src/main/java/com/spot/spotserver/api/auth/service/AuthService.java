@@ -5,12 +5,15 @@ import com.spot.spotserver.api.auth.client.KakaoAuthApiClient;
 import com.spot.spotserver.api.auth.dto.response.KakaoAccessTokenResponse;
 import com.spot.spotserver.api.auth.dto.response.KakaoUserResponse;
 import com.spot.spotserver.api.auth.dto.response.TokenResponse;
+import com.spot.spotserver.api.auth.exception.OAuth2TokenException;
 import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.api.user.exception.UserNotFoundException;
 import com.spot.spotserver.api.user.repository.UserRepository;
 import com.spot.spotserver.api.user.service.UserService;
+import com.spot.spotserver.common.payload.ErrorCode;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +43,7 @@ public class AuthService {
     @Transactional
     public TokenResponse login(final String authorizationCode) {
         if (authorizationCode == null || authorizationCode.isEmpty()) {
-            throw new IllegalArgumentException("인가코드가 적절하지 않습니다.");
+            throw new OAuth2TokenException(ErrorCode.INVALID_AUTH_CODE);
         }
 
         // 카카오에서 액세스 토큰과 리프레시 토큰 받아오기
@@ -48,7 +51,7 @@ public class AuthService {
         try {
             kakaoTokenResponse = getOAuth2Authentication(authorizationCode);
         } catch (FeignException e) {
-            throw new IllegalArgumentException("엑세스 토큰 조회에 실패하였습니다. 사용한 인가코드: " + authorizationCode, e);
+            throw new OAuth2TokenException(ErrorCode.TOKEN_REQUEST_FAILED);
         }
 
         // 카카오 액세스 토큰으로 사용자 정보 가져오기
@@ -56,7 +59,7 @@ public class AuthService {
         try {
             userResponse = getUserInfo(kakaoTokenResponse.accessToken());
         } catch (FeignException e) {
-            throw new IllegalArgumentException("사용자 정보 조회에 실패하였습니다. 사용한 액세스 토큰: " + kakaoTokenResponse.accessToken(), e);
+            throw new OAuth2TokenException(ErrorCode.USER_INFO_REQUEST_FAILED);
         }
 
         // 서비스 자체 JWT 액세스 및 리프레시 토큰 생성
@@ -91,6 +94,6 @@ public class AuthService {
     public User getUserFromAccessToken(String accessToken) {
         Long userId = jwtTokenProvider.getUserFromJwt(accessToken);
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 }
