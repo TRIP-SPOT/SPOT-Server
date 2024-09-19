@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.auth.jwt;
 
+import com.spot.spotserver.api.auth.exception.JwtCustomException;
 import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,12 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 userAuthentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(userAuthentication);
             }
-        } catch (Exception exception) {
-            try {
-                throw new Exception();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        } catch (JwtCustomException e) {
+            // JWT 관련 예외 처리
+            response.sendError(e.getError().getHTTPStatusCode(), e.getError().getMessage());
+            return;
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");
+            return;
         }
         // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
