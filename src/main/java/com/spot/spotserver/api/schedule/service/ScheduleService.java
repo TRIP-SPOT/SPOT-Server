@@ -1,6 +1,8 @@
 package com.spot.spotserver.api.schedule.service;
 
 import com.spot.spotserver.api.schedule.domain.Schedule;
+import com.spot.spotserver.api.schedule.dto.ScheduleDurationUpdateRequest;
+import com.spot.spotserver.api.schedule.dto.ScheduleDurationUpdateResponse;
 import com.spot.spotserver.api.schedule.dto.ScheduleRequest;
 import com.spot.spotserver.api.schedule.dto.ScheduleResponse;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
@@ -39,5 +41,12 @@ public class ScheduleService {
     @Transactional
     public void deleteSchedule(Long id) {
         this.scheduleRepository.deleteById(id);
+    }
+
+    @Transactional
+    public ScheduleDurationUpdateResponse updateDuration(Long id, ScheduleDurationUpdateRequest scheduleDurationUpdateRequest) {
+        Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
+        schedule.updateDuration(scheduleDurationUpdateRequest.getStartDate(), scheduleDurationUpdateRequest.getEndDate());
+        return new ScheduleDurationUpdateResponse(schedule);
     }
 }

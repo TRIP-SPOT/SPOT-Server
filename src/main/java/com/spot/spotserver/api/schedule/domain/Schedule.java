@@ -45,4 +45,9 @@ public class Schedule extends BaseEntity {
         this.image = image;
         this.user = user;
     }
+
+    public void updateDuration(LocalDate startDate, LocalDate endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }
