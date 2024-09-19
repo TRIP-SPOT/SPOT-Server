@@ -1,5 +1,10 @@
 package com.spot.spotserver.api.auth.jwt;
 
+import com.spot.spotserver.api.auth.exception.EmptyJwtTokenException;
+import com.spot.spotserver.api.auth.exception.ExpiredJwtTokenException;
+import com.spot.spotserver.api.auth.exception.InvalidJwtTokenException;
+import com.spot.spotserver.api.auth.exception.UnsupportedJwtTokenException;
+import com.spot.spotserver.common.payload.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -37,20 +42,20 @@ public class JwtTokenProvider {
 
     public JwtValidationType validateToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            return JwtValidationType.EMPTY_JWT;
+            throw new EmptyJwtTokenException(ErrorCode.EMPTY_JWT);
         }
 
         try {
             final Claims claims = getBody(token);
             return JwtValidationType.VALID_JWT;
         } catch (MalformedJwtException ex) {
-            return JwtValidationType.INVALID_JWT_TOKEN;
+            throw new InvalidJwtTokenException(ErrorCode.INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException ex) {
-            return JwtValidationType.EXPIRED_JWT_TOKEN;
+            throw new ExpiredJwtTokenException(ErrorCode.EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException ex) {
-            return JwtValidationType.UNSUPPORTED_JWT_TOKEN;
+            throw new UnsupportedJwtTokenException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
         } catch (IllegalArgumentException ex) {
-            return JwtValidationType.EMPTY_JWT;
+            throw new EmptyJwtTokenException(ErrorCode.EMPTY_JWT);
         }
     }
 
