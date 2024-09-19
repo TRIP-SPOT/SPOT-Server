@@ -41,23 +41,15 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public TokenResponse login(final String authorizationCode) {
-        if (authorizationCode == null || authorizationCode.isEmpty()) {
-            throw new OAuth2TokenException(ErrorCode.INVALID_AUTH_CODE);
-        }
-
-        // 카카오에서 액세스 토큰과 리프레시 토큰 받아오기
-        KakaoAccessTokenResponse kakaoTokenResponse;
-        try {
-            kakaoTokenResponse = getOAuth2Authentication(authorizationCode);
-        } catch (FeignException e) {
-            throw new OAuth2TokenException(ErrorCode.TOKEN_REQUEST_FAILED);
+    public TokenResponse login(final String accessToken) {
+        if (accessToken == null || accessToken.isEmpty()) {
+            throw new OAuth2TokenException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
 
         // 카카오 액세스 토큰으로 사용자 정보 가져오기
         KakaoUserResponse userResponse;
         try {
-            userResponse = getUserInfo(kakaoTokenResponse.accessToken());
+            userResponse = getUserInfo(accessToken);
         } catch (FeignException e) {
             throw new OAuth2TokenException(ErrorCode.USER_INFO_REQUEST_FAILED);
         }
@@ -71,12 +63,6 @@ public class AuthService {
         refreshTokenService.saveRefreshToken(userResponse.id(), jwtRefreshToken);
 
         return processUser(userResponse);
-    }
-
-    private KakaoAccessTokenResponse getOAuth2Authentication(final String authorizationCode) {
-        KakaoAccessTokenResponse tokenResponse = kakaoAuthApiClient.getOAuth2AccessToken(
-                AUTH_CODE, clientId, REDIRECT_URI, authorizationCode, clientSecret);
-        return tokenResponse;
     }
 
     private KakaoUserResponse getUserInfo(final String accessToken) {

@@ -20,9 +20,9 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/api/login/kakao")
-    public ApiResponse<TokenResponse> login(@RequestParam final String authorizationCode) {
+    public ApiResponse<TokenResponse> login(@RequestParam final String accessToken) {
 
-        TokenResponse successResponse = authService.login(authorizationCode);
+        TokenResponse successResponse = authService.login(accessToken);
 
         TokenResponse result = new TokenResponse(
                 successResponse.accessToken(),
