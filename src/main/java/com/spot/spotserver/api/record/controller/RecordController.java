@@ -25,10 +25,9 @@ public class RecordController {
     private final RepresentativeImageService representativeImageService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<RecordResponse> createRecord(@RequestPart("record") RecordRequest recordRequest,
-                                          @RequestPart("images") List<MultipartFile> images,
+    public ApiResponse<RecordResponse> createRecord(@ModelAttribute RecordRequest recordRequest,
                                           @CurrentUser User user) {
-        RecordResponse recordResponse = this.recordService.createRecord(recordRequest, images, user);
+        RecordResponse recordResponse = this.recordService.createRecord(recordRequest, user);
         return ApiResponse.success(SuccessCode.CREATE_RECORD_SUCCESS, recordResponse);
     }
 

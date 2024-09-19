@@ -4,8 +4,10 @@ import com.spot.spotserver.common.domain.City;
 import com.spot.spotserver.common.domain.Region;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +23,6 @@ public class RecordRequest {
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
+
+    private List<MultipartFile> images;
 }

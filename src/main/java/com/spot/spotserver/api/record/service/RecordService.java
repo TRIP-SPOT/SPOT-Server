@@ -25,7 +25,7 @@ public class RecordService {
     private final RecordImageService recordImageService;
 
     @Transactional
-    public RecordResponse createRecord(RecordRequest recordRequest, List<MultipartFile> images, User user) {
+    public RecordResponse createRecord(RecordRequest recordRequest, User user) {
         Record newRecord = Record.builder()
                 .title(recordRequest.getTitle())
                 .description(recordRequest.getDescription())
@@ -38,13 +38,15 @@ public class RecordService {
 
         this.recordRepository.save(newRecord);
 
-        List<String> imageUrls = images.stream().map((image) -> {
-            try {
-                return recordImageService.createRecordImage(image, newRecord, user);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).toList();
+        List<String> imageUrls = recordRequest.getImages()
+                .stream()
+                .map((image) -> {
+                    try {
+                        return recordImageService.createRecordImage(image, newRecord, user);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).toList();
 
         return new RecordResponse (newRecord, imageUrls);
     }
