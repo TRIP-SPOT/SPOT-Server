@@ -3,15 +3,19 @@ package com.spot.spotserver.api.user.service;
 import com.spot.spotserver.api.auth.client.KakaoAccount;
 import com.spot.spotserver.api.auth.dto.response.KakaoUserResponse;
 import com.spot.spotserver.api.auth.dto.response.TokenResponse;
+import com.spot.spotserver.api.auth.exception.JwtCustomException;
 import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
+import com.spot.spotserver.api.auth.jwt.JwtValidationType;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
 import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
 import com.spot.spotserver.api.user.dto.response.ProfileResponse;
+import com.spot.spotserver.api.user.exception.UserNotFoundException;
 import com.spot.spotserver.api.user.repository.UserRepository;
+import com.spot.spotserver.common.payload.ErrorCode;
 import com.spot.spotserver.common.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,9 +42,8 @@ public class UserService {
     }
 
     public Long getIdBySocialId(final Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다.")
-        );
+        User user = userRepository.findBySocialId(socialId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         return user.getId();
     }
 
@@ -59,6 +62,11 @@ public class UserService {
     }
 
     public TokenResponse reissueToken(final String refreshToken) {
+        JwtValidationType validationType = jwtTokenProvider.validateToken(refreshToken);
+        if (validationType != JwtValidationType.VALID_JWT) {
+            throw new JwtCustomException(ErrorCode.INVALID_JWT_TOKEN);
+        }
+
         Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
         UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
         String newAccessToken = jwtTokenProvider.issueAccessToken(userAuthentication);
@@ -70,19 +78,22 @@ public class UserService {
     }
 
     public String saveNickname(NicknameRequest nicknameRequest, User user) {
-        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         user.setNickname(nicknameRequest.nickname());
         userRepository.save(user);
         return nicknameRequest.nickname();
     }
 
     public String getNickname(User user) {
-        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         return user.getNickname();
     }
 
     public String saveProfile(ProfileImageRequest profileImageRequest, User user) throws IOException {
-        userRepository.findById(user.getId()).orElseThrow(()-> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         String profileUrl = s3Service.upload(profileImageRequest.profileImage(), user.getNickname());
         user.setProfileUrl(profileUrl);
         user.setColor(null);
@@ -91,7 +102,8 @@ public class UserService {
     }
 
     public String saveColor(ColorRequest colorRequest, User user) {
-        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         user.setColor(colorRequest.colorCode());
         user.setProfileUrl(null);
         userRepository.save(user);
@@ -99,7 +111,8 @@ public class UserService {
     }
 
     public ProfileResponse getProfile(User user) {
-        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         if (Objects.isNull(user.getProfileUrl())) {
             return new ProfileResponse(null, user.getColor(), user.getNickname());
         }
