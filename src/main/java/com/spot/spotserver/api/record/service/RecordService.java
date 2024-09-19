@@ -47,7 +47,7 @@ public class RecordService {
                     try {
                         return recordImageService.createRecordImage(image, newRecord, user);
                     } catch (IOException e) {
-                        throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);;
+                        throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);
                     }
                 }).toList();
 
