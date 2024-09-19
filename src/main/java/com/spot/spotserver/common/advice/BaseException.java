@@ -13,6 +13,11 @@ public class BaseException extends RuntimeException {
         this.error = error;
     }
 
+    public BaseException(ErrorCode error, Throwable cause) {
+        super(error.getMessage(), cause);
+        this.error = error;
+    }
+
     public int getHttpStatus(){
         return error.getHTTPStatusCode();
     }
