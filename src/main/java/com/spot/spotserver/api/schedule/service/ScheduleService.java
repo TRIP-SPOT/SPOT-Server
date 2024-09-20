@@ -1,10 +1,7 @@
 package com.spot.spotserver.api.schedule.service;
 
 import com.spot.spotserver.api.schedule.domain.Schedule;
-import com.spot.spotserver.api.schedule.dto.ScheduleDurationUpdateRequest;
-import com.spot.spotserver.api.schedule.dto.ScheduleDurationUpdateResponse;
-import com.spot.spotserver.api.schedule.dto.ScheduleRequest;
-import com.spot.spotserver.api.schedule.dto.ScheduleResponse;
+import com.spot.spotserver.api.schedule.dto.*;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.s3.S3Service;
@@ -48,5 +45,13 @@ public class ScheduleService {
         Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
         schedule.updateDuration(scheduleDurationUpdateRequest.getStartDate(), scheduleDurationUpdateRequest.getEndDate());
         return new ScheduleDurationUpdateResponse(schedule);
+    }
+
+    @Transactional
+    public ScheduleImageUpdateResponse updateImage(Long id, MultipartFile imageFile, User user) throws IOException {
+        String image = this.s3Service.upload(imageFile, user.getNickname());
+        Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
+        schedule.updateImage(image);
+        return new ScheduleImageUpdateResponse(image);
     }
 }
