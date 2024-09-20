@@ -1,9 +1,6 @@
 package com.spot.spotserver.api.schedule.controller;
 
-import com.spot.spotserver.api.schedule.dto.ScheduleDurationUpdateRequest;
-import com.spot.spotserver.api.schedule.dto.ScheduleDurationUpdateResponse;
-import com.spot.spotserver.api.schedule.dto.ScheduleRequest;
-import com.spot.spotserver.api.schedule.dto.ScheduleResponse;
+import com.spot.spotserver.api.schedule.dto.*;
 import com.spot.spotserver.api.schedule.service.ScheduleService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.annotation.CurrentUser;
@@ -37,10 +34,18 @@ public class ScheduleController {
         return ApiResponse.success(SuccessCode.DELETE_SCHEDULE_SUCCESS);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/date/{id}")
     public ApiResponse<ScheduleDurationUpdateResponse> updateDuration(@PathVariable Long id,
                                                                       @RequestBody @Valid ScheduleDurationUpdateRequest scheduleDurationUpdateRequest) {
         ScheduleDurationUpdateResponse scheduleDurationUpdateResponse = this.scheduleService.updateDuration(id, scheduleDurationUpdateRequest);
         return ApiResponse.success(SuccessCode.UPDATE_SCHEDULE_DURATION_SUCCESS, scheduleDurationUpdateResponse);
+    }
+
+    @PatchMapping("/image/{id}")
+    public ApiResponse<ScheduleImageUpdateResponse> updateImage(@PathVariable Long id,
+                                                                @RequestParam MultipartFile imageFile,
+                                                                @CurrentUser User user) throws IOException {
+        ScheduleImageUpdateResponse scheduleImageUpdateResponse = this.scheduleService.updateImage(id, imageFile, user);
+        return ApiResponse.success(SuccessCode.UPDATE_SCHEDULE_IMAGE_SUCCESS, scheduleImageUpdateResponse);
     }
 }
