@@ -50,4 +50,8 @@ public class Schedule extends BaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
+    public void updateImage(String image) {
+        this.image = image;
+    }
 }
