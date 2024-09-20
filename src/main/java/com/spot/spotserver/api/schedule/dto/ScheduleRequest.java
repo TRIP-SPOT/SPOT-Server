@@ -17,4 +17,12 @@ public class ScheduleRequest {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    public void setRegion(int region) {
+        this.region = Region.values()[region];
+    }
+
+    public void setCity(int city) {
+        this.city = City.values()[city];
+    }
 }

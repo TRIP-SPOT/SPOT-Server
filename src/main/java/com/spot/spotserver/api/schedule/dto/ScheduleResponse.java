@@ -10,17 +10,17 @@ import java.time.LocalDate;
 
 @Data
 public class ScheduleResponse {
-    private Region region;
+    private Integer region;
 
-    private City city;
+    private Integer city;
 
     private LocalDate startDate;
 
     private LocalDate endDate;
 
     public ScheduleResponse(Schedule schedule) {
-        this.region = schedule.getRegion();
-        this.city = schedule.getCity();
+        this.region = schedule.getRegion().ordinal();
+        this.city = schedule.getCity().ordinal();
         this.startDate = schedule.getStartDate();
         this.endDate = schedule.getEndDate();
     }

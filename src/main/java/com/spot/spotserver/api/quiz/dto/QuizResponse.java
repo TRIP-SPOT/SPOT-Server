@@ -1,6 +1,7 @@
 package com.spot.spotserver.api.quiz.dto;
 
 import com.spot.spotserver.api.quiz.domain.Quiz;
+import com.spot.spotserver.common.domain.City;
 import com.spot.spotserver.common.domain.Region;
 import lombok.Data;
 
@@ -8,7 +9,9 @@ import lombok.Data;
 public class QuizResponse {
     private Long id;
 
-    private Region region;
+    private Integer region;
+    
+    private Integer city;
 
     private String question;
 
@@ -22,7 +25,8 @@ public class QuizResponse {
 
     public QuizResponse(Quiz quiz) {
         this.id = quiz.getId();
-        this.region = quiz.getRegion();
+        this.region = quiz.getRegion().ordinal();
+        this.city = quiz.getCity().ordinal();
         this.question = quiz.getQuestion();
         this.choice1 = quiz.getChoice1();
         this.choice2 = quiz.getChoice2();

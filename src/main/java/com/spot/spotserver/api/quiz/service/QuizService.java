@@ -2,7 +2,6 @@ package com.spot.spotserver.api.quiz.service;
 
 import com.spot.spotserver.api.quiz.domain.Badge;
 import com.spot.spotserver.api.quiz.domain.Quiz;
-import com.spot.spotserver.api.quiz.dto.AnswerCheckRequest;
 import com.spot.spotserver.api.quiz.dto.AnswerCheckResponse;
 import com.spot.spotserver.api.quiz.dto.QuizResponse;
 import com.spot.spotserver.api.quiz.repository.BadgeRepository;
@@ -24,15 +23,15 @@ public class QuizService {
         return new QuizResponse(quiz);
     }
 
-    public AnswerCheckResponse checkAnswer(AnswerCheckRequest answerCheckRequest, User user) {
-        Quiz quiz = this.quizRepository.findById(answerCheckRequest.getId()).orElseThrow();
-        boolean isCorrect = quiz.isCorrect(answerCheckRequest.getAnswer());
+    public AnswerCheckResponse checkAnswer(Long id, Integer answer, User user) {
+        Quiz quiz = this.quizRepository.findById(id).orElseThrow();
+        boolean isCorrect = quiz.isCorrect(answer);
 
         if (isCorrect) {
             Badge badge = this.badgeRepository.findAllByUserAndRegion(user, quiz.getRegion()).orElseThrow();
             badge.addBadge();
         }
 
-        return new AnswerCheckResponse(isCorrect);
+        return new AnswerCheckResponse(isCorrect, quiz);
     }
 }
