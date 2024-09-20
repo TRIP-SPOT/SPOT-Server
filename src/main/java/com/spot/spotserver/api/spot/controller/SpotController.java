@@ -36,4 +36,10 @@ public class SpotController {
         SpotAroundResponse result = spotService.getSpotAroundList(contentId);
         return ApiResponse.success(SuccessCode.GET_SPOT_AROUND_SUCCESS, result);
     }
+
+    @GetMapping("/around/{contentId}")
+    public ApiResponse<SpotDetailsResponse> getAroundDetails(@PathVariable Integer contentId) {
+        SpotDetailsResponse result = spotService.getSpotDetails(contentId);
+        return ApiResponse.success(SuccessCode.GET_AROUND_DETAIL_SUCCESS, result);
+    }
 }
