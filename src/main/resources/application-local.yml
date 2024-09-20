@@ -13,6 +13,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://localhost:8080/api/login/kakao
   data:
     redis:
       host: localhost
