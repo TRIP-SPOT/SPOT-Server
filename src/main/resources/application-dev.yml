@@ -13,7 +13,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://www.spot-setjetter.kro.kr:8080/api/login/kakao
   data:
     redis:
       host: localhost
