@@ -13,9 +13,9 @@ public class AccessibleSpotResponse {
 
     private String imageUrl;
 
-    private Region region;
+    private Integer region;
 
-    private City city;
+    private Integer city;
 
     private Long quizId;
 
@@ -23,8 +23,8 @@ public class AccessibleSpotResponse {
         this.workName = spot.getWork().getName();
         this.spotName = spot.getName();
         this.imageUrl = spot.getWork().getPosterUrl();
-        this.region = spot.getRegion();
-        this.city = spot.getCity();
+        this.region = spot.getRegion().ordinal();
+        this.city = spot.getCity().ordinal();
         this.quizId = quizId;
     }
 }

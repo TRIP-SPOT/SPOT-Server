@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.quiz.domain;
 
+import com.spot.spotserver.common.domain.City;
 import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.common.domain.BaseEntity;
@@ -21,6 +22,8 @@ public class Quiz extends BaseEntity {
 
     private Region region;
 
+    private City city;
+
     private String question;
 
     private String choice1;
@@ -38,9 +41,10 @@ public class Quiz extends BaseEntity {
     private Spot spot;
 
     @Builder
-    public Quiz(Long id, Region region, String question, String choice1, String choice2, String choice3, String choice4, Integer answer, Spot spot) {
+    public Quiz(Long id, Region region, City city, String question, String choice1, String choice2, String choice3, String choice4, Integer answer, Spot spot) {
         this.id = id;
         this.region = region;
+        this.city = city;
         this.question = question;
         this.choice1 = choice1;
         this.choice2 = choice2;

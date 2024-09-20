@@ -25,4 +25,12 @@ public class RecordRequest {
     private LocalDateTime endDate;
 
     private List<MultipartFile> images;
+
+    public void setRegion(int region) {
+        this.region = Region.values()[region];
+    }
+
+    public void setCity(int city) {
+        this.city = City.values()[city];
+    }
 }
