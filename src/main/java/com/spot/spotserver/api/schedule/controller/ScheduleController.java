@@ -55,4 +55,10 @@ public class ScheduleController {
         ScheduleImageUpdateResponse scheduleImageUpdateResponse = this.scheduleService.updateImage(id, imageFile, user);
         return ApiResponse.success(SuccessCode.UPDATE_SCHEDULE_IMAGE_SUCCESS, scheduleImageUpdateResponse);
     }
+
+    @PostMapping("/location")
+    public ApiResponse<LocationResponse> createLocation(@RequestBody @Valid LocationRequest locationRequest) {
+        LocationResponse locationResponse = this.scheduleService.createLocation(locationRequest);
+        return ApiResponse.success(SuccessCode.ADD_LOCATION_SUCCESS, locationResponse);
+    }
 }

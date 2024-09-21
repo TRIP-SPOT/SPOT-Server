@@ -1,7 +1,9 @@
 package com.spot.spotserver.api.schedule.service;
 
+import com.spot.spotserver.api.schedule.domain.Location;
 import com.spot.spotserver.api.schedule.domain.Schedule;
 import com.spot.spotserver.api.schedule.dto.*;
+import com.spot.spotserver.api.schedule.repository.LocationRepository;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.s3.S3Service;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final LocationRepository locationRepository;
     private final S3Service s3Service;
 
     @Transactional
@@ -61,5 +64,23 @@ public class ScheduleService {
         Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
         schedule.updateImage(image);
         return new ScheduleImageUpdateResponse(image);
+    }
+
+    @Transactional
+    public LocationResponse createLocation(LocationRequest locationRequest) {
+        Schedule schedule = this.scheduleRepository.findById(locationRequest.getScheduleId()).orElseThrow();
+        Integer day = this.locationRepository.countBySchedule(schedule);
+        Integer seq = this.locationRepository.countByScheduleAndDay(schedule, day);
+
+        Location newLocation = Location.builder()
+                .day(day)
+                .seq(seq)
+                .name(locationRequest.getName())
+                .description(locationRequest.getDescription())
+                .schedule(schedule)
+                .build();
+
+        Location savedLocation = this.locationRepository.save(newLocation);
+        return new LocationResponse(savedLocation);
     }
 }

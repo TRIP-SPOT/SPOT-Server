@@ -2,6 +2,7 @@ package com.spot.spotserver.api.schedule.domain;
 
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,12 +20,6 @@ public class Location extends BaseEntity {
 
     private String description;
 
-    private LocationType type;
-
-    private Double longitude;
-
-    private Double latitude;
-
     private Integer day;
 
     private Integer seq;
@@ -32,4 +27,14 @@ public class Location extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+    @Builder
+    public Location(Long id, String name, String description, Integer day, Integer seq, Schedule schedule) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.day = day;
+        this.seq = seq;
+        this.schedule = schedule;
+    }
 }
