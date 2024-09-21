@@ -83,4 +83,9 @@ public class ScheduleService {
         Location savedLocation = this.locationRepository.save(newLocation);
         return new LocationResponse(savedLocation);
     }
+
+    @Transactional
+    public void deleteLocations(List<Long> ids) {
+        ids.forEach(this.locationRepository::deleteById);
+    }
 }
