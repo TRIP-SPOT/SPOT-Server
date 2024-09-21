@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/schedule")
@@ -20,12 +21,18 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ApiResponse<ScheduleResponse> createSchedule(@RequestPart ScheduleRequest scheduleRequest,
                                                         @RequestPart MultipartFile image,
                                                         @CurrentUser User user) throws IOException {
         ScheduleResponse scheduleResponse = this.scheduleService.createSchedule(scheduleRequest, image, user);
         return ApiResponse.success(SuccessCode.CREATE_SCHEDULE_SUCCESS, scheduleResponse);
+    }
+
+    @GetMapping("")
+    public ApiResponse<List<ScheduleResponse>> getSchedules(@CurrentUser User user) {
+        List<ScheduleResponse> schedules = this.scheduleService.getSchedules(user);
+        return ApiResponse.success(SuccessCode.GET_SCHEDULE_LIST_SUCCESS, schedules);
     }
 
     @DeleteMapping("/{id}")

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,13 @@ public class ScheduleService {
                 .build();
         Schedule savedSchedule = this.scheduleRepository.save(newSchedule);
         return new ScheduleResponse(savedSchedule);
+    }
+
+    public List<ScheduleResponse> getSchedules(User user) {
+        return this.scheduleRepository.findAllByUser(user)
+                .stream()
+                .map(ScheduleResponse::new)
+                .toList();
     }
 
     @Transactional
