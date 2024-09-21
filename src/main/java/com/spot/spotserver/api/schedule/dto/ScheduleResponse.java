@@ -20,11 +20,14 @@ public class ScheduleResponse {
 
     private LocalDate endDate;
 
+    private String image;
+
     public ScheduleResponse(Schedule schedule) {
         this.id = schedule.getId();
         this.region = schedule.getRegion().ordinal();
         this.city = schedule.getCity().ordinal();
         this.startDate = schedule.getStartDate();
         this.endDate = schedule.getEndDate();
+        this.image = schedule.getImage();
     }
 }
