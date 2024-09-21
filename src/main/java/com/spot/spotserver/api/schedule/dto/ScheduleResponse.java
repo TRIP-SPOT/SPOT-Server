@@ -10,6 +10,8 @@ import java.time.LocalDate;
 
 @Data
 public class ScheduleResponse {
+    private Long id;
+
     private Integer region;
 
     private Integer city;
@@ -19,6 +21,7 @@ public class ScheduleResponse {
     private LocalDate endDate;
 
     public ScheduleResponse(Schedule schedule) {
+        this.id = schedule.getId();
         this.region = schedule.getRegion().ordinal();
         this.city = schedule.getCity().ordinal();
         this.startDate = schedule.getStartDate();
