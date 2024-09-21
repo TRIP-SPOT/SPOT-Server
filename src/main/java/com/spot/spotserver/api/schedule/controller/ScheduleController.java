@@ -22,7 +22,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("")
-    public ApiResponse<ScheduleResponse> createSchedule(@RequestPart ScheduleRequest scheduleRequest,
+    public ApiResponse<ScheduleResponse> createSchedule(@RequestPart(name = "schedule") ScheduleRequest scheduleRequest,
                                                         @RequestPart MultipartFile image,
                                                         @CurrentUser User user) throws IOException {
         ScheduleResponse scheduleResponse = this.scheduleService.createSchedule(scheduleRequest, image, user);
@@ -60,5 +60,11 @@ public class ScheduleController {
     public ApiResponse<LocationResponse> createLocation(@RequestBody @Valid LocationRequest locationRequest) {
         LocationResponse locationResponse = this.scheduleService.createLocation(locationRequest);
         return ApiResponse.success(SuccessCode.ADD_LOCATION_SUCCESS, locationResponse);
+    }
+
+    @DeleteMapping("/{ids}")
+    public <T> ApiResponse<T> deleteLocations(@PathVariable List<Long> ids) {
+        this.scheduleService.deleteLocations(ids);
+        return ApiResponse.success(SuccessCode.DELETE_LOCATIONS_SUCCESS);
     }
 }
