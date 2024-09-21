@@ -51,7 +51,7 @@ public class SpotService {
             throw new IllegalArgumentException("데이터가 없습니다.");
         }
 
-        SpotDetailsResponse spotDetailsResponse = SpotDetailsResponse.fromCommonInfo(commonInfo.response().body().items().item().get(0));
+        SpotDetailsResponse spotDetailsResponse = SpotDetailsResponse.fromCommonInfo(commonInfo.response().body().items().item().get(0), spotRepository);
         return spotDetailsResponse;
     }
 
