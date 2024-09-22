@@ -6,10 +6,7 @@ import com.spot.spotserver.api.spot.client.CommonInfoClient;
 import com.spot.spotserver.api.spot.client.LocationBasedListClient;
 import com.spot.spotserver.api.spot.domain.Likes;
 import com.spot.spotserver.api.spot.domain.Spot;
-import com.spot.spotserver.api.spot.dto.response.CommonInfoResponse;
-import com.spot.spotserver.api.spot.dto.response.LocationBasedResponse;
-import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
-import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
+import com.spot.spotserver.api.spot.dto.response.*;
 import com.spot.spotserver.api.spot.exception.LikeAlreadyExistException;
 import com.spot.spotserver.api.spot.exception.LikeNotFoundException;
 import com.spot.spotserver.api.spot.exception.SpotNotFoundException;
@@ -21,7 +18,6 @@ import com.spot.spotserver.api.user.repository.UserRepository;
 import com.spot.spotserver.common.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,6 +121,20 @@ public class SpotService {
         }
 
         return SpotAroundResponse.fromLocationBasedList(attractionResponse, restaurantResponse, accommodationResponse);
+    }
+
+    public AroundDetailsResponse getAroundDetails(Integer contentId) {
+
+        CommonInfoResponse commonInfo = commonInfoClient.getCommonInfo(
+                mobileOS, mobileApp, _type, contentId.toString(), "Y", "Y", "Y", "Y", "Y", serviceKey
+        );
+
+        if (commonInfo == null || commonInfo.response().body().items().item().isEmpty()) {
+            throw new IllegalArgumentException("데이터가 없습니다.");
+        }
+
+        AroundDetailsResponse aroundDetailsResponse = AroundDetailsResponse.fromCommonInfo(commonInfo.response().body().items().item().get(0));
+        return aroundDetailsResponse;
     }
 
     @Transactional
