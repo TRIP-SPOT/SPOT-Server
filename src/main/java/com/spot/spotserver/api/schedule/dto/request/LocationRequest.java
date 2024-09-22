@@ -1,4 +1,4 @@
-package com.spot.spotserver.api.schedule.dto;
+package com.spot.spotserver.api.schedule.dto.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

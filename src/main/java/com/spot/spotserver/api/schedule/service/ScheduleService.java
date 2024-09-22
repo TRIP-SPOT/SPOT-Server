@@ -2,7 +2,10 @@ package com.spot.spotserver.api.schedule.service;
 
 import com.spot.spotserver.api.schedule.domain.Location;
 import com.spot.spotserver.api.schedule.domain.Schedule;
-import com.spot.spotserver.api.schedule.dto.*;
+import com.spot.spotserver.api.schedule.dto.request.LocationRequest;
+import com.spot.spotserver.api.schedule.dto.request.ScheduleDurationUpdateRequest;
+import com.spot.spotserver.api.schedule.dto.request.ScheduleRequest;
+import com.spot.spotserver.api.schedule.dto.response.*;
 import com.spot.spotserver.api.schedule.repository.LocationRepository;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
 import com.spot.spotserver.api.user.domain.User;
