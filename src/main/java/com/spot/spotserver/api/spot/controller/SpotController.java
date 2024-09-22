@@ -4,6 +4,8 @@ import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
 import com.spot.spotserver.api.spot.service.SpotService;
+import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.common.annotation.CurrentUser;
 import com.spot.spotserver.common.payload.ApiResponse;
 import com.spot.spotserver.common.payload.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +43,12 @@ public class SpotController {
     public ApiResponse<SpotDetailsResponse> getAroundDetails(@PathVariable Integer contentId) {
         SpotDetailsResponse result = spotService.getSpotDetails(contentId);
         return ApiResponse.success(SuccessCode.GET_AROUND_DETAIL_SUCCESS, result);
+    }
+
+    @PostMapping("/spot/{id}/likes")
+    public ApiResponse likeSpot(@PathVariable("id") Long spotId,
+                                @CurrentUser User user) {
+        spotService.likeSpot(spotId, user);
+        return ApiResponse.success(SuccessCode.LIKE_SPOT_SUCCESS);
     }
 }
