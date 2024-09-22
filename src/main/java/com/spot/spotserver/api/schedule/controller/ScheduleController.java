@@ -22,7 +22,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("")
-    public ApiResponse<ScheduleResponse> createSchedule(@RequestPart(name = "schedule") ScheduleRequest scheduleRequest,
+    public ApiResponse<ScheduleResponse> createSchedule(@RequestPart("schedule") ScheduleRequest scheduleRequest,
                                                         @RequestPart MultipartFile image,
                                                         @CurrentUser User user) throws IOException {
         ScheduleResponse scheduleResponse = this.scheduleService.createSchedule(scheduleRequest, image, user);
@@ -33,6 +33,12 @@ public class ScheduleController {
     public ApiResponse<List<ScheduleResponse>> getSchedules(@CurrentUser User user) {
         List<ScheduleResponse> schedules = this.scheduleService.getSchedules(user);
         return ApiResponse.success(SuccessCode.GET_SCHEDULE_LIST_SUCCESS, schedules);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<DetailedScheduleResponse> getSchedule(@PathVariable Long id) {
+        DetailedScheduleResponse detailedScheduleResponse = this.scheduleService.getSchedule(id);
+        return ApiResponse.success(SuccessCode.GET_SCHEDULE_SUCCESS, detailedScheduleResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -50,7 +56,7 @@ public class ScheduleController {
 
     @PatchMapping("/image/{id}")
     public ApiResponse<ScheduleImageUpdateResponse> updateImage(@PathVariable Long id,
-                                                                @RequestParam MultipartFile imageFile,
+                                                                @RequestParam("image") MultipartFile imageFile,
                                                                 @CurrentUser User user) throws IOException {
         ScheduleImageUpdateResponse scheduleImageUpdateResponse = this.scheduleService.updateImage(id, imageFile, user);
         return ApiResponse.success(SuccessCode.UPDATE_SCHEDULE_IMAGE_SUCCESS, scheduleImageUpdateResponse);
