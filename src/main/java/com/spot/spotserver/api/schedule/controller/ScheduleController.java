@@ -71,9 +71,15 @@ public class ScheduleController {
         return ApiResponse.success(SuccessCode.ADD_LOCATION_SUCCESS, locationResponse);
     }
 
-    @DeleteMapping("/{ids}")
+    @DeleteMapping("/location/{ids}")
     public <T> ApiResponse<T> deleteLocations(@PathVariable List<Long> ids) {
         this.scheduleService.deleteLocations(ids);
         return ApiResponse.success(SuccessCode.DELETE_LOCATIONS_SUCCESS);
+    }
+
+    @GetMapping("/selected-spot/{id}")
+    public ApiResponse<SelectedSpotsResponse> getSelectedSpots(@PathVariable Long id) {
+        SelectedSpotsResponse selectedSpotsResponse = this.scheduleService.getSelectedSpots(id);
+        return ApiResponse.success(SuccessCode.GET_SELECTED_SPOT_SUCCESS, selectedSpotsResponse);
     }
 }
