@@ -21,8 +21,8 @@ public class SpotController {
     private final SpotService spotService;
 
     @GetMapping("/spot/{contentId}")
-    public ApiResponse<SpotDetailsResponse> getSpotDetails(@PathVariable Integer contentId) {
-        SpotDetailsResponse result = spotService.getSpotDetails(contentId);
+    public ApiResponse<SpotDetailsResponse> getSpotDetails(@PathVariable Integer contentId, @CurrentUser User user) {
+        SpotDetailsResponse result = spotService.getSpotDetails(contentId, user);
         return ApiResponse.success(SuccessCode.GET_SPOT_DETAIL_SUCCESS, result);
     }
 
@@ -40,8 +40,8 @@ public class SpotController {
     }
 
     @GetMapping("/around/{contentId}")
-    public ApiResponse<SpotDetailsResponse> getAroundDetails(@PathVariable Integer contentId) {
-        SpotDetailsResponse result = spotService.getSpotDetails(contentId);
+    public ApiResponse<SpotDetailsResponse> getAroundDetails(@PathVariable Integer contentId, @CurrentUser User user) {
+        SpotDetailsResponse result = spotService.getSpotDetails(contentId, user);
         return ApiResponse.success(SuccessCode.GET_AROUND_DETAIL_SUCCESS, result);
     }
 
