@@ -33,6 +33,8 @@ public enum ErrorCode {
     RECORD_NOT_FOUND(NOT_FOUND, "해당하는 기록이 존재하지 않습니다."),
     RECORD_IMAGE_NOT_FOUND(NOT_FOUND, "해당하는 기록 이미지가 존재하지 않습니다."),
     REPRESENTATIVE_IMAGE_NOT_FOUND(NOT_FOUND, "해당하는 대표 이미지가 존재하지 않습니다."),
+    SPOT_NOT_FOUND(NOT_FOUND, "해당하는 촬영지가 존재하지 않습니다."),
+    LIKE_NOT_FOUND(NOT_FOUND, "해당하는 좋아요가 존재하지 않습니다."),
 
     // 500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다."),
