@@ -31,6 +31,8 @@ public enum SuccessCode {
     GET_SPOT_AROUND_SUCCESS(OK, "스팟 주변 장소 리스트가 정상적으로 조회되었습니다."),
     GET_AROUND_DETAIL_SUCCESS(OK, "주변 장소 상세 정보가 정상적으로 조회되었습니다."),
     GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS(OK, "반경 20km 이내의 스팟 목록이 정상적으로 조회되었습니다."),
+    LIKE_SPOT_SUCCESS(OK, "스팟에 대한 좋아요가 정상적으로 등록되었습니다."),
+    UNLIKE_SPOT_SUCCESS(OK, "스팟에 대한 좋아요가 정상적으로 삭제되었습니다."),
 
     // RECORD
     CREATE_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 생성되었습니다."),
