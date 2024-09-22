@@ -22,7 +22,8 @@ public record SpotDetailsResponse(
         Integer city,
         String longitude,
         String latitude,
-        String overview
+        String overview,
+        String posterUrl
 ) {
     public static SpotDetailsResponse fromCommonInfo(CommonInfoResponse.Item item, SpotRepository spotRepository) {
 
@@ -43,7 +44,8 @@ public record SpotDetailsResponse(
                 spot.get().getCity() != null ? spot.get().getCity().ordinal() : null,
                 item.mapx(),
                 item.mapy(),
-                item.overview()
+                item.overview(),
+                spot.get().getWork().getPosterUrl()
         );
     }
 }
