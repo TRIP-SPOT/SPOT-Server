@@ -52,7 +52,7 @@ public class SpotService {
     private static final String mobileApp = "SPOT";
     private static final String _type = "json";
 
-    public SpotDetailsResponse getSpotDetails(Integer contentId) {
+    public SpotDetailsResponse getSpotDetails(Integer contentId, User user) {
 
         CommonInfoResponse commonInfo = commonInfoClient.getCommonInfo(
                 mobileOS, mobileApp, _type, contentId.toString(), "Y", "Y", "Y", "Y", "Y", serviceKey
@@ -62,7 +62,7 @@ public class SpotService {
             throw new IllegalArgumentException("데이터가 없습니다.");
         }
 
-        SpotDetailsResponse spotDetailsResponse = SpotDetailsResponse.fromCommonInfo(commonInfo.response().body().items().item().get(0), spotRepository);
+        SpotDetailsResponse spotDetailsResponse = SpotDetailsResponse.fromCommonInfo(commonInfo.response().body().items().item().get(0), spotRepository, likesRepository, user);
         return spotDetailsResponse;
     }
 
@@ -135,7 +135,7 @@ public class SpotService {
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
 
-        Likes existingLike = likesRepository.findByUserAndSpot(user, spot);
+        Optional<Likes> existingLike = likesRepository.findByUserAndSpot(user, spot);
         if (existingLike != null) {
             throw new LikeAlreadyExistException(ErrorCode.LIKE_ALREADY_EXIST);
         }
@@ -155,9 +155,9 @@ public class SpotService {
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
 
-        Likes likes = likesRepository.findByUserAndSpot(user, spot);
+        Optional<Likes> likes = likesRepository.findByUserAndSpot(user, spot);
         if (likes != null) {
-            likesRepository.delete(likes);
+            likesRepository.delete(likes.get());
         } else {
             throw new LikeNotFoundException(ErrorCode.LIKE_NOT_FOUND);
         }
