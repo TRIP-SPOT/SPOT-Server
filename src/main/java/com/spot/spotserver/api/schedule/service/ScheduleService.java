@@ -46,6 +46,15 @@ public class ScheduleService {
                 .toList();
     }
 
+    public DetailedScheduleResponse getSchedule(Long id) {
+        Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
+        List<LocationResponse> locationsResponses = this.locationRepository.findAllBySchedule(schedule)
+                .stream()
+                .map(LocationResponse::new)
+                .toList();
+        return new DetailedScheduleResponse(schedule, locationsResponses);
+    }
+
     @Transactional
     public void deleteSchedule(Long id) {
         this.scheduleRepository.deleteById(id);
