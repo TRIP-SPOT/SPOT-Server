@@ -11,6 +11,7 @@ import com.spot.spotserver.api.spot.dto.response.LocationBasedResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
 import com.spot.spotserver.api.spot.exception.LikeAlreadyExistException;
+import com.spot.spotserver.api.spot.exception.LikeNotFoundException;
 import com.spot.spotserver.api.spot.exception.SpotNotFoundException;
 import com.spot.spotserver.api.spot.repository.LikesRepository;
 import com.spot.spotserver.api.spot.repository.SpotRepository;
@@ -144,5 +145,21 @@ public class SpotService {
                 .spot(spot)
                 .build();
         likesRepository.save(likes);
+    }
+
+    @Transactional
+    public void unlikeSpot(Long spotId, User user) {
+
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
+
+        Likes likes = likesRepository.findByUserAndSpot(user, spot);
+        if (likes != null) {
+            likesRepository.delete(likes);
+        } else {
+            throw new LikeNotFoundException(ErrorCode.LIKE_NOT_FOUND);
+        }
     }
 }
