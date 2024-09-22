@@ -51,4 +51,11 @@ public class SpotController {
         spotService.likeSpot(spotId, user);
         return ApiResponse.success(SuccessCode.LIKE_SPOT_SUCCESS);
     }
+
+    @DeleteMapping("/spot/{id}/likes")
+    public ApiResponse unlikeSpot(@PathVariable("id") Long spotId,
+                                  @CurrentUser User user) {
+        spotService.unlikeSpot(spotId, user);
+        return ApiResponse.success(SuccessCode.UNLIKE_SPOT_SUCCESS);
+    }
 }
