@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -172,4 +169,22 @@ public class SpotService {
             throw new LikeNotFoundException(ErrorCode.LIKE_NOT_FOUND);
         }
     }
-}
+
+    public List<TopLikedSpotResponse> getTop5Spots(User user) {
+        List<Object[]> topSpots = likesRepository.findTop5SpotsByLikes();
+        List<TopLikedSpotResponse> responses = new ArrayList<>();
+
+        for (Object[] topSpot : topSpots) {
+            Spot spot = (Spot) topSpot[0];
+            Long likeCount = (Long) topSpot[1];
+
+            boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
+
+            // TopLikedSpotResponse로 변환하여 리스트에 추가
+            TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount.intValue());
+            responses.add(response);
+        }
+
+        return responses;
+        }
+    }
