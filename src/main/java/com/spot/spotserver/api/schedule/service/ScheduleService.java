@@ -2,12 +2,14 @@ package com.spot.spotserver.api.schedule.service;
 
 import com.spot.spotserver.api.schedule.domain.Location;
 import com.spot.spotserver.api.schedule.domain.Schedule;
+import com.spot.spotserver.api.schedule.domain.SelectedSpot;
 import com.spot.spotserver.api.schedule.dto.request.LocationRequest;
 import com.spot.spotserver.api.schedule.dto.request.ScheduleDurationUpdateRequest;
 import com.spot.spotserver.api.schedule.dto.request.ScheduleRequest;
 import com.spot.spotserver.api.schedule.dto.response.*;
 import com.spot.spotserver.api.schedule.repository.LocationRepository;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
+import com.spot.spotserver.api.schedule.repository.SelectedSpotRepository;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.s3.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final LocationRepository locationRepository;
+    private final SelectedSpotRepository selectedSpotRepository;
     private final S3Service s3Service;
 
     @Transactional
@@ -99,5 +102,27 @@ public class ScheduleService {
     @Transactional
     public void deleteLocations(List<Long> ids) {
         ids.forEach(this.locationRepository::deleteById);
+    }
+
+    public SelectedSpotsResponse getSelectedSpots(Long id) {
+        Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
+        List<SelectedSpot> selectedSpots = this.selectedSpotRepository.findAllBySchedule(schedule);
+
+        List<SelectedSpotResponse> attractions = selectedSpots.stream()
+                .filter(spot -> spot.getContentTypeId().equals("12"))
+                .map(SelectedSpotResponse::new)
+                .toList();
+
+        List<SelectedSpotResponse> restaurant = selectedSpots.stream()
+                .filter(spot -> spot.getContentTypeId().equals("39"))
+                .map(SelectedSpotResponse::new)
+                .toList();
+
+        List<SelectedSpotResponse> accommodation = selectedSpots.stream()
+                .filter(spot -> spot.getContentTypeId().equals("32"))
+                .map(SelectedSpotResponse::new)
+                .toList();
+
+        return new SelectedSpotsResponse(attractions, restaurant, accommodation);
     }
 }
