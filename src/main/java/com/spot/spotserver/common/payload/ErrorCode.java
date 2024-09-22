@@ -18,6 +18,7 @@ public enum ErrorCode {
     USER_INFO_REQUEST_FAILED(BAD_REQUEST, "사용자 정보 요청에 실패했습니다."),
     USER_CREATION_FAILED(BAD_REQUEST, "사용자 생성에 실패했습니다."),
     INVALID_ACCESS_TOKEN(BAD_REQUEST, "유효하지 않은 액세스 토큰입니다."),
+    LIKE_ALREADY_EXIST(BAD_REQUEST, "이미 존재하는 좋아요 입니다."),
 
     // 401 UNAUTHORIZED
     EMPTY_JWT(UNAUTHORIZED, "JWT 토큰이 비어 있습니다."),
@@ -33,6 +34,7 @@ public enum ErrorCode {
     RECORD_IMAGE_NOT_FOUND(NOT_FOUND, "해당하는 기록 이미지가 존재하지 않습니다."),
     REPRESENTATIVE_IMAGE_NOT_FOUND(NOT_FOUND, "해당하는 대표 이미지가 존재하지 않습니다."),
     SPOT_NOT_FOUND(NOT_FOUND, "해당하는 촬영지가 존재하지 않습니다."),
+    LIKE_NOT_FOUND(NOT_FOUND, "해당하는 좋아요가 존재하지 않습니다."),
 
     // 500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다."),
