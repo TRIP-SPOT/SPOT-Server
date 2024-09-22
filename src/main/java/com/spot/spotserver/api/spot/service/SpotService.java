@@ -4,12 +4,20 @@ import com.spot.spotserver.api.quiz.domain.Quiz;
 import com.spot.spotserver.api.quiz.repository.QuizRepository;
 import com.spot.spotserver.api.spot.client.CommonInfoClient;
 import com.spot.spotserver.api.spot.client.LocationBasedListClient;
+import com.spot.spotserver.api.spot.domain.Likes;
 import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.api.spot.dto.response.CommonInfoResponse;
 import com.spot.spotserver.api.spot.dto.response.LocationBasedResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
 import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
+import com.spot.spotserver.api.spot.exception.LikeAlreadyExistException;
+import com.spot.spotserver.api.spot.exception.SpotNotFoundException;
+import com.spot.spotserver.api.spot.repository.LikesRepository;
 import com.spot.spotserver.api.spot.repository.SpotRepository;
+import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.api.user.exception.UserNotFoundException;
+import com.spot.spotserver.api.user.repository.UserRepository;
+import com.spot.spotserver.common.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
@@ -31,6 +39,8 @@ public class SpotService {
     private final LocationBasedListClient locationBasedListClient;
     private final SpotRepository spotRepository;
     private final QuizRepository quizRepository;
+    private final UserRepository userRepository;
+    private final LikesRepository likesRepository;
   
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
@@ -114,5 +124,25 @@ public class SpotService {
         }
 
         return SpotAroundResponse.fromLocationBasedList(attractionResponse, restaurantResponse, accommodationResponse);
+    }
+
+    @Transactional
+    public void likeSpot(Long spotId, User user) {
+
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
+
+        Likes existingLike = likesRepository.findByUserAndSpot(user, spot);
+        if (existingLike != null) {
+            throw new LikeAlreadyExistException(ErrorCode.LIKE_ALREADY_EXIST);
+        }
+
+        Likes likes = Likes.builder()
+                .user(user)
+                .spot(spot)
+                .build();
+        likesRepository.save(likes);
     }
 }
