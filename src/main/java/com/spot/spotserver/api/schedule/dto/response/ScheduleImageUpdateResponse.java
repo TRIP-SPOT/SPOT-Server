@@ -1,4 +1,4 @@
-package com.spot.spotserver.api.schedule.dto;
+package com.spot.spotserver.api.schedule.dto.response;
 
 import lombok.Data;
 
