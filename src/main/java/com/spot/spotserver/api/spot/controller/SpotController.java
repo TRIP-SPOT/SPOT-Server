@@ -1,9 +1,6 @@
 package com.spot.spotserver.api.spot.controller;
 
-import com.spot.spotserver.api.spot.dto.response.AccessibleSpotResponse;
-import com.spot.spotserver.api.spot.dto.response.AroundDetailsResponse;
-import com.spot.spotserver.api.spot.dto.response.SpotAroundResponse;
-import com.spot.spotserver.api.spot.dto.response.SpotDetailsResponse;
+import com.spot.spotserver.api.spot.dto.response.*;
 import com.spot.spotserver.api.spot.service.SpotService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.annotation.CurrentUser;
@@ -58,5 +55,11 @@ public class SpotController {
                                   @CurrentUser User user) {
         spotService.unlikeSpot(spotId, user);
         return ApiResponse.success(SuccessCode.UNLIKE_SPOT_SUCCESS);
+    }
+
+    @GetMapping("/spot/home")
+    public ApiResponse<List<TopLikedSpotResponse>> getTop5Spots(@CurrentUser User user) {
+        List<TopLikedSpotResponse> result = spotService.getTop5Spots(user);
+        return ApiResponse.success(SuccessCode.GET_TOP_LIKE_SPOT_SUCCESS, result);
     }
 }
