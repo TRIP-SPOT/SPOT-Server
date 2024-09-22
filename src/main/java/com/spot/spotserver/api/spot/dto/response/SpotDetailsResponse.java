@@ -3,7 +3,9 @@ package com.spot.spotserver.api.spot.dto.response;
 
 import com.spot.spotserver.api.spot.domain.Spot;
 import com.spot.spotserver.api.spot.exception.SpotNotFoundException;
+import com.spot.spotserver.api.spot.repository.LikesRepository;
 import com.spot.spotserver.api.spot.repository.SpotRepository;
+import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.payload.ErrorCode;
 
 import java.util.Optional;
@@ -23,12 +25,17 @@ public record SpotDetailsResponse(
         String longitude,
         String latitude,
         String overview,
+        Boolean isLiked,
+        Integer likeCount,
         String posterUrl
 ) {
-    public static SpotDetailsResponse fromCommonInfo(CommonInfoResponse.Item item, SpotRepository spotRepository) {
+    public static SpotDetailsResponse fromCommonInfo(CommonInfoResponse.Item item, SpotRepository spotRepository, LikesRepository likesRepository, User user) {
 
         Optional<Spot> spot = Optional.ofNullable(spotRepository.findByContentId(Integer.parseInt(item.contentid()))
                 .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND)));
+
+        Boolean isLiked = likesRepository.findByUserAndSpot(user, spot.get()).isPresent();
+        Integer likeCount = likesRepository.countBySpot(spot.get());
 
         return new SpotDetailsResponse(
                 item.contentid(),
@@ -45,6 +52,8 @@ public record SpotDetailsResponse(
                 item.mapx(),
                 item.mapy(),
                 item.overview(),
+                isLiked,
+                likeCount,
                 spot.get().getWork().getPosterUrl()
         );
     }
