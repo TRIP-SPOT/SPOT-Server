@@ -18,6 +18,7 @@ public class RepresentativeImage {
 
     private String url;
 
+    @Enumerated(EnumType.ORDINAL)
     private Region region;
 
     @ManyToOne

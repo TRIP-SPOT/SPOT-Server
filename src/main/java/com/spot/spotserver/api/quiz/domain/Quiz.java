@@ -20,8 +20,10 @@ public class Quiz extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.ORDINAL)
     private Region region;
 
+    @Enumerated(EnumType.ORDINAL)
     private City city;
 
     private String question;
