@@ -49,10 +49,10 @@ public class RepresentativeImageService {
     }
 
     @Transactional
-    public void updateRepresentativeImage(Long id, MultipartFile image, User user) throws IOException {
+    public void updateRepresentativeImage(RepresentativeImageRequest representativeImageRequest, User user) throws IOException {
         try {
-            String newImageUrl = this.s3Service.upload(image, user.getNickname());
-            RepresentativeImage representativeImage = this.representativeImageRepository.findById(id)
+            String newImageUrl = this.s3Service.upload(representativeImageRequest.getImage(), user.getNickname());
+            RepresentativeImage representativeImage = this.representativeImageRepository.findByRegion(representativeImageRequest.getRegion())
                     .orElseThrow(() -> new RepresentativeImageNotFoundException(ErrorCode.REPRESENTATIVE_IMAGE_NOT_FOUND));
             representativeImage.updateUrl(newImageUrl);
         } catch (IOException e) {

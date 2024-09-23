@@ -71,11 +71,10 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.GET_REPRESENTATIVE_IMAGE_SUCCESS, representativeImageResponses);
     }
 
-    @PatchMapping("/representative/{id}")
-    public <T> ApiResponse<T> updateRepresentativeImage(@PathVariable Long id,
-                                                        @ModelAttribute RepresentativeImageRequest representativeImageRequest,
+    @PatchMapping("/representative")
+    public <T> ApiResponse<T> updateRepresentativeImage(@ModelAttribute RepresentativeImageRequest representativeImageRequest,
                                                         @CurrentUser User user) throws IOException {
-        this.representativeImageService.updateRepresentativeImage(id, representativeImageRequest.getImage(), user);
+        this.representativeImageService.updateRepresentativeImage(representativeImageRequest, user);
         return ApiResponse.success(SuccessCode.UPDATE_REPRESENTATIVE_IMAGE_SUCCESS);
     }
 }
