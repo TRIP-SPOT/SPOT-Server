@@ -145,6 +145,6 @@ public class ScheduleService {
                 ))
                 .toList();
 
-        List<SelectedSpot> savedSpots = this.selectedSpotRepository.saveAll(selectedSpots);
+        this.selectedSpotRepository.saveAll(selectedSpots);
     }
 }
