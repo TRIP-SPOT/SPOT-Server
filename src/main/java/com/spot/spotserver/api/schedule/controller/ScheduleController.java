@@ -25,10 +25,9 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("")
-    public ApiResponse<ScheduleResponse> createSchedule(@RequestPart("schedule") ScheduleRequest scheduleRequest,
-                                                        @RequestPart MultipartFile image,
+    public ApiResponse<ScheduleResponse> createSchedule(@ModelAttribute ScheduleRequest scheduleRequest,
                                                         @CurrentUser User user) throws IOException {
-        ScheduleResponse scheduleResponse = this.scheduleService.createSchedule(scheduleRequest, image, user);
+        ScheduleResponse scheduleResponse = this.scheduleService.createSchedule(scheduleRequest, user);
         return ApiResponse.success(SuccessCode.CREATE_SCHEDULE_SUCCESS, scheduleResponse);
     }
 
