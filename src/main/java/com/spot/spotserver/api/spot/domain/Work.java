@@ -21,9 +21,12 @@ public class Work extends BaseEntity {
 
     private String posterUrl;
 
-    public Work(Long id, String name, String posterUrl) {
+    private String quote;
+
+    public Work(Long id, String name, String posterUrl, String quote) {
         this.id = id;
         this.name = name;
         this.posterUrl = posterUrl;
+        this.quote = quote;
     }
 }
