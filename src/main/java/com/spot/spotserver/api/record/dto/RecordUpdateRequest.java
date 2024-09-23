@@ -12,5 +12,5 @@ public class RecordUpdateRequest {
 
     String description;
 
-    List<Long> deleteImages;
+    List<String> deleteImages;
 }
