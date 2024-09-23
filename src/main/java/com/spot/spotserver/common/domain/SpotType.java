@@ -10,5 +10,5 @@ public enum SpotType {
 
     private final String type;
 
-    private String type() {return type;}
+    public String type() {return type;}
 }
