@@ -188,6 +188,23 @@ public class SpotService {
             TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount.intValue());
             responses.add(response);
         }
+
+        if (responses.size() < 5) {
+            List<Spot> allSpots = spotRepository.findAll();
+            Collections.shuffle(allSpots);
+
+            for (Spot spot : allSpots) {
+                if (responses.size() >= 5) break;
+
+                // 이미 포함된 Spot 제외
+                if (responses.stream().noneMatch(r -> r.id().equals(spot.getId()))) {
+                    boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
+                    int likeCount = likesRepository.countBySpot(spot);
+                    TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount); // 좋아요 수는 0으로 설정
+                    responses.add(response);
+                }
+            }
+        }
         return responses;
     }
 
