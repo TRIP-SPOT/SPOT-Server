@@ -18,6 +18,7 @@ import com.spot.spotserver.api.spot.repository.WorkRepository;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.exception.UserNotFoundException;
 import com.spot.spotserver.api.user.repository.UserRepository;
+import com.spot.spotserver.common.domain.SpotType;
 import com.spot.spotserver.common.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -109,13 +110,13 @@ public class SpotService {
 
         try {
             attractionResponse = locationBasedListClient.getLocationBasedList(
-                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", "12", serviceKey
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", SpotType.ATTRACTION.type(), serviceKey
             );
             restaurantResponse = locationBasedListClient.getLocationBasedList(
-                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", "39", serviceKey
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", SpotType.RESTAURANT.type(), serviceKey
             );
             accommodationResponse = locationBasedListClient.getLocationBasedList(
-                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", "32", serviceKey
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", SpotType.ACCOMMODATION.type(), serviceKey
             );
         } catch (Exception e) {
             return new SpotAroundResponse(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());

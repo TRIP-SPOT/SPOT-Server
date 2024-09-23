@@ -6,11 +6,13 @@ import com.spot.spotserver.api.schedule.domain.SelectedSpot;
 import com.spot.spotserver.api.schedule.dto.request.LocationRequest;
 import com.spot.spotserver.api.schedule.dto.request.ScheduleDurationUpdateRequest;
 import com.spot.spotserver.api.schedule.dto.request.ScheduleRequest;
+import com.spot.spotserver.api.schedule.dto.request.SelectedSpotRequest;
 import com.spot.spotserver.api.schedule.dto.response.*;
 import com.spot.spotserver.api.schedule.repository.LocationRepository;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
 import com.spot.spotserver.api.schedule.repository.SelectedSpotRepository;
 import com.spot.spotserver.api.user.domain.User;
+import com.spot.spotserver.common.domain.SpotType;
 import com.spot.spotserver.common.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,8 @@ public class ScheduleService {
     private final S3Service s3Service;
 
     @Transactional
-    public ScheduleResponse createSchedule(ScheduleRequest scheduleRequest, MultipartFile image, User user) throws IOException {
-        String imageUrl = this.s3Service.upload(image, user.getNickname());
+    public ScheduleResponse createSchedule(ScheduleRequest scheduleRequest, User user) throws IOException {
+        String imageUrl = this.s3Service.upload(scheduleRequest.getImage(), user.getNickname());
         Schedule newSchedule = Schedule.builder()
                 .region(scheduleRequest.getRegion())
                 .city(scheduleRequest.getCity())
@@ -109,20 +111,40 @@ public class ScheduleService {
         List<SelectedSpot> selectedSpots = this.selectedSpotRepository.findAllBySchedule(schedule);
 
         List<SelectedSpotResponse> attractions = selectedSpots.stream()
-                .filter(spot -> spot.getContentTypeId().equals("12"))
+                .filter(spot -> spot.getContentTypeId().equals(SpotType.ATTRACTION.type()))
                 .map(SelectedSpotResponse::new)
                 .toList();
 
         List<SelectedSpotResponse> restaurant = selectedSpots.stream()
-                .filter(spot -> spot.getContentTypeId().equals("39"))
+                .filter(spot -> spot.getContentTypeId().equals(SpotType.RESTAURANT.type()))
                 .map(SelectedSpotResponse::new)
                 .toList();
 
         List<SelectedSpotResponse> accommodation = selectedSpots.stream()
-                .filter(spot -> spot.getContentTypeId().equals("32"))
+                .filter(spot -> spot.getContentTypeId().equals(SpotType.ACCOMMODATION.type()))
                 .map(SelectedSpotResponse::new)
                 .toList();
 
         return new SelectedSpotsResponse(attractions, restaurant, accommodation);
+    }
+
+    @Transactional
+    public void createSelectedSpot(List<SelectedSpotRequest> selectedSpotRequests) {
+        List<SelectedSpot> selectedSpots = selectedSpotRequests
+                .stream()
+                .map((selectedSpotRequest ->
+                    SelectedSpot.builder()
+                            .title(selectedSpotRequest.getTitle())
+                            .addr1(selectedSpotRequest.getAddr1())
+                            .addr2(selectedSpotRequest.getAddr2())
+                            .contentId(selectedSpotRequest.getContentId())
+                            .contentTypeId(selectedSpotRequest.getContentTypeId())
+                            .dist(selectedSpotRequest.getDist())
+                            .image(selectedSpotRequest.getImage())
+                            .build()
+                ))
+                .toList();
+
+        List<SelectedSpot> savedSpots = this.selectedSpotRepository.saveAll(selectedSpots);
     }
 }
