@@ -62,4 +62,11 @@ public class SpotController {
         List<TopLikedSpotResponse> result = spotService.getTop5Spots(user);
         return ApiResponse.success(SuccessCode.GET_TOP_LIKE_SPOT_SUCCESS, result);
     }
+
+    @GetMapping("/spot/search")
+    public ApiResponse<List<SpotSearchResponse>> searchSpotsByWorkName(@RequestParam String keyword, @CurrentUser User user) {
+        List<SpotSearchResponse> result = spotService.searchSpotsByWorkName(keyword, user);
+        return ApiResponse.success(SuccessCode.GET_SEARCH_SPOT_SUCCESS, result);
+    }
 }
+

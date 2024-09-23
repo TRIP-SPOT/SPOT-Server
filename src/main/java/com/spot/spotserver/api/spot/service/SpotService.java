@@ -6,12 +6,15 @@ import com.spot.spotserver.api.spot.client.CommonInfoClient;
 import com.spot.spotserver.api.spot.client.LocationBasedListClient;
 import com.spot.spotserver.api.spot.domain.Likes;
 import com.spot.spotserver.api.spot.domain.Spot;
+import com.spot.spotserver.api.spot.domain.Work;
 import com.spot.spotserver.api.spot.dto.response.*;
 import com.spot.spotserver.api.spot.exception.LikeAlreadyExistException;
 import com.spot.spotserver.api.spot.exception.LikeNotFoundException;
 import com.spot.spotserver.api.spot.exception.SpotNotFoundException;
+import com.spot.spotserver.api.spot.exception.WorkNotFoundException;
 import com.spot.spotserver.api.spot.repository.LikesRepository;
 import com.spot.spotserver.api.spot.repository.SpotRepository;
+import com.spot.spotserver.api.spot.repository.WorkRepository;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.exception.UserNotFoundException;
 import com.spot.spotserver.api.user.repository.UserRepository;
@@ -36,6 +39,7 @@ public class SpotService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final LikesRepository likesRepository;
+    private final WorkRepository workRepository;
 
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
@@ -184,6 +188,46 @@ public class SpotService {
             // TopLikedSpotResponse로 변환하여 리스트에 추가
             TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount.intValue());
             responses.add(response);
+        }
+
+        if (responses.size() < 5) {
+            List<Spot> allSpots = spotRepository.findAll();
+            Collections.shuffle(allSpots);
+
+            for (Spot spot : allSpots) {
+                if (responses.size() >= 5) break;
+
+                // 이미 포함된 Spot 제외
+                if (responses.stream().noneMatch(r -> r.id().equals(spot.getId()))) {
+                    boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
+                    int likeCount = likesRepository.countBySpot(spot);
+                    TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount); // 좋아요 수는 0으로 설정
+                    responses.add(response);
+                }
+            }
+        }
+        return responses;
+    }
+
+    public List<SpotSearchResponse> searchSpotsByWorkName(String workName, User user) {
+        List<Work> works = workRepository.findByNameContainingIgnoreCase(workName);
+        if (works.isEmpty()) {
+            throw new WorkNotFoundException(ErrorCode.WORK_NOT_FOUND);
+        }
+
+        List<SpotSearchResponse> responses = new ArrayList<>();
+
+        for (Work work : works) {
+            List<Spot> spots = spotRepository.findByWorkId(work.getId());
+            if (spots.isEmpty()) {
+                throw new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND);
+            }
+
+            for (Spot spot : spots) {
+                Boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
+                Integer likeCount = likesRepository.countBySpot(spot);
+                responses.add(SpotSearchResponse.fromEntity(spot, isLiked, likeCount));
+            }
         }
         return responses;
     }
