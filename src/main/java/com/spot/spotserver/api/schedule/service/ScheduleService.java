@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -86,7 +87,7 @@ public class ScheduleService {
     @Transactional
     public LocationResponse createLocation(LocationRequest locationRequest) {
         Schedule schedule = this.scheduleRepository.findById(locationRequest.getScheduleId()).orElseThrow();
-        Integer day = this.locationRepository.countBySchedule(schedule);
+        Integer day = this.locationRepository.countBySchedule(schedule) % (int) ChronoUnit.DAYS.between(schedule.getStartDate(), schedule.getEndDate()) + 1;
         Integer seq = this.locationRepository.countByScheduleAndDay(schedule, day);
 
         Location newLocation = Location.builder()
