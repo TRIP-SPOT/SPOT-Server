@@ -28,14 +28,14 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class SpotService {
-  
+
     private final CommonInfoClient commonInfoClient;
     private final LocationBasedListClient locationBasedListClient;
     private final SpotRepository spotRepository;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final LikesRepository likesRepository;
-  
+
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
 
@@ -92,7 +92,7 @@ public class SpotService {
 
         return EARTH_RADIUS * angularDistance;
     }
-      
+
     public SpotAroundResponse getSpotAroundList(Integer contentId) {
 
         Optional<Spot> spot = Optional.ofNullable(spotRepository.findByContentId(contentId).orElseThrow(() -> new IllegalArgumentException("해당하는 촬영지가 존재하지 않습니다.")));
@@ -143,7 +143,7 @@ public class SpotService {
                 .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
 
         Optional<Likes> existingLike = likesRepository.findByUserAndSpot(user, spot);
-        if (existingLike != null) {
+        if (existingLike.isPresent()) {
             throw new LikeAlreadyExistException(ErrorCode.LIKE_ALREADY_EXIST);
         }
 
@@ -163,7 +163,7 @@ public class SpotService {
                 .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
 
         Optional<Likes> likes = likesRepository.findByUserAndSpot(user, spot);
-        if (likes != null) {
+        if (likes.isPresent()) {
             likesRepository.delete(likes.get());
         } else {
             throw new LikeNotFoundException(ErrorCode.LIKE_NOT_FOUND);
@@ -184,7 +184,6 @@ public class SpotService {
             TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount.intValue());
             responses.add(response);
         }
-
         return responses;
-        }
     }
+}
