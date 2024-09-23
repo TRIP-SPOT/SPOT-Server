@@ -3,6 +3,7 @@ package com.spot.spotserver.api.schedule.controller;
 import com.spot.spotserver.api.schedule.dto.request.LocationRequest;
 import com.spot.spotserver.api.schedule.dto.request.ScheduleDurationUpdateRequest;
 import com.spot.spotserver.api.schedule.dto.request.ScheduleRequest;
+import com.spot.spotserver.api.schedule.dto.request.SelectedSpotRequest;
 import com.spot.spotserver.api.schedule.dto.response.*;
 import com.spot.spotserver.api.schedule.service.ScheduleService;
 import com.spot.spotserver.api.user.domain.User;
@@ -80,5 +81,11 @@ public class ScheduleController {
     public ApiResponse<SelectedSpotsResponse> getSelectedSpots(@PathVariable Long id) {
         SelectedSpotsResponse selectedSpotsResponse = this.scheduleService.getSelectedSpots(id);
         return ApiResponse.success(SuccessCode.GET_SELECTED_SPOT_SUCCESS, selectedSpotsResponse);
+    }
+
+    @PostMapping("/selected-spot/")
+    public <T> ApiResponse<T> selectSpot(@RequestBody @Valid List<SelectedSpotRequest> selectedSpotRequests) {
+        this.scheduleService.createSelectedSpot(selectedSpotRequests);
+        return ApiResponse.success(SuccessCode.SELECT_SPOT_SUCCESS);
     }
 }
