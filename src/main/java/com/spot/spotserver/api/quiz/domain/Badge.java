@@ -18,6 +18,7 @@ public class Badge extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.ORDINAL)
     private Region region;
 
     private Integer count = 0;

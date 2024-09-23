@@ -25,8 +25,10 @@ public class Record extends BaseEntity {
 
     private String description;
 
+    @Enumerated(EnumType.ORDINAL)
     private Region region;
 
+    @Enumerated(EnumType.ORDINAL)
     private City city;
 
     private LocalDateTime startDate;

@@ -23,8 +23,10 @@ public class Spot extends BaseEntity {
 
     private String name;
 
+    @Enumerated(EnumType.ORDINAL)
     private Region region;
 
+    @Enumerated(EnumType.ORDINAL)
     private City city;
 
     private Double longitude;
