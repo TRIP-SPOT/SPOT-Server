@@ -34,6 +34,7 @@ public enum SuccessCode {
     LIKE_SPOT_SUCCESS(OK, "스팟에 대한 좋아요가 정상적으로 등록되었습니다."),
     UNLIKE_SPOT_SUCCESS(OK, "스팟에 대한 좋아요가 정상적으로 삭제되었습니다."),
     GET_TOP_LIKE_SPOT_SUCCESS(OK, "좋아요 상위 5개 촬영지가 정상적으로 조회되었습니다."),
+    GET_SEARCH_SPOT_SUCCESS(OK, "작품명에 대한 촬영지 목록이 정상적으로 조회되었습니다."),
 
     // RECORD
     CREATE_RECORD_SUCCESS(OK, "여행 기록이 정상적으로 생성되었습니다."),
