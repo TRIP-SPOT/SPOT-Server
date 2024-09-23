@@ -53,11 +53,11 @@ public class RecordImageService {
     }
 
     @Transactional
-    public void deleteRecordImageById(Long recordImageId) {
-        if (!this.recordImageRepository.existsById(recordImageId)) {
+    public void deleteRecordImageById(String recordImageId) {
+        if (!this.recordImageRepository.existsByUrl(recordImageId)) {
             throw new RecordImageNotFoundException(ErrorCode.RECORD_IMAGE_NOT_FOUND);
         }
-        this.recordImageRepository.deleteById(recordImageId);
+        this.recordImageRepository.deleteByUrl(recordImageId);
     }
 
     @Transactional
