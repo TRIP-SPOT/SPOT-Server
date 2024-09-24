@@ -19,8 +19,10 @@ public class SpotController {
     private final SpotService spotService;
 
     @GetMapping("/spot/{contentId}")
-    public ApiResponse<SpotDetailsResponse> getSpotDetails(@PathVariable Integer contentId, @CurrentUser User user) {
-        SpotDetailsResponse result = spotService.getSpotDetails(contentId, user);
+    public ApiResponse<SpotDetailsResponse> getSpotDetails(@PathVariable Integer contentId,
+                                                           @RequestParam Long workId,
+                                                           @CurrentUser User user) {
+        SpotDetailsResponse result = spotService.getSpotDetails(contentId, workId, user);
         return ApiResponse.success(SuccessCode.GET_SPOT_DETAIL_SUCCESS, result);
     }
 

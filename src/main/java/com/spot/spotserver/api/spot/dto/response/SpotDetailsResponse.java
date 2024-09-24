@@ -29,13 +29,10 @@ public record SpotDetailsResponse(
         Integer likeCount,
         String posterUrl
 ) {
-    public static SpotDetailsResponse fromCommonInfo(CommonInfoResponse.Item item, SpotRepository spotRepository, LikesRepository likesRepository, User user) {
+    public static SpotDetailsResponse fromCommonInfo(CommonInfoResponse.Item item, Spot spot, LikesRepository likesRepository, User user) {
 
-        Optional<Spot> spot = Optional.ofNullable(spotRepository.findByContentId(Integer.parseInt(item.contentid()))
-                .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND)));
-
-        Boolean isLiked = likesRepository.findByUserAndSpot(user, spot.get()).isPresent();
-        Integer likeCount = likesRepository.countBySpot(spot.get());
+        Boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
+        Integer likeCount = likesRepository.countBySpot(spot);
 
         return new SpotDetailsResponse(
                 item.contentid(),
@@ -47,14 +44,14 @@ public record SpotDetailsResponse(
                 item.addr1(),
                 item.addr2(),
                 item.zipcode(),
-                spot.get().getRegion() != null ? spot.get().getRegion().ordinal() : null,
-                spot.get().getCity() != null ? spot.get().getCity().ordinal() : null,
+                spot.getRegion() != null ? spot.getRegion().ordinal() : null,
+                spot.getCity() != null ? spot.getCity().ordinal() : null,
                 item.mapx(),
                 item.mapy(),
                 item.overview(),
                 isLiked,
                 likeCount,
-                spot.get().getWork().getPosterUrl()
+                spot.getWork().getPosterUrl()
         );
     }
 }
