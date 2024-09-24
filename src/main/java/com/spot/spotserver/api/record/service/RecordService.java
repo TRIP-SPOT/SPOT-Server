@@ -69,7 +69,7 @@ public class RecordService {
     }
 
     @Transactional
-    public void updateRecord(Long id, RecordUpdateRequest recordUpdateRequest, Optional<List<MultipartFile>> addImages, User user) {
+    public void updateRecord(Long id, RecordUpdateRequest recordUpdateRequest, User user) {
         Record updateRecord = this.recordRepository.findById(id)
                 .orElseThrow(()-> new RecordNotFoundException(ErrorCode.RECORD_NOT_FOUND));
         updateRecord.updateTitle(recordUpdateRequest.getTitle());
@@ -77,15 +77,17 @@ public class RecordService {
 
         recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImageById);
 
-        addImages.ifPresent(images -> {
-            images.forEach(image -> {
+        List<MultipartFile> addImages = recordUpdateRequest.getAddImages();
+        
+        if (addImages == null) throw new IllegalArgumentException();
+
+        addImages.forEach(image -> {
                 try {
                     recordImageService.createRecordImage(image, updateRecord, user);
                 } catch (IOException e) {
                     throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);
                 }
             });
-        });
     }
 
     @Transactional
