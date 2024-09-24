@@ -45,10 +45,9 @@ public class RecordController {
 
     @PatchMapping("/{id}")
     public <T> ApiResponse<T> updateRecord(@PathVariable Long id,
-                                    @RequestPart("recordUpdate") RecordUpdateRequest recordUpdateRequest,
-                                    @RequestPart("addImages") Optional<List<MultipartFile>> addImages,
+                                    @ModelAttribute RecordUpdateRequest recordUpdateRequest,
                                     @CurrentUser User user) {
-        this.recordService.updateRecord(id, recordUpdateRequest, addImages, user);
+        this.recordService.updateRecord(id, recordUpdateRequest, user);
         return ApiResponse.success(SuccessCode.UPDATE_RECORD_SUCCESS);
     }
 
