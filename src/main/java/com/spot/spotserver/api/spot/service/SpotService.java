@@ -116,13 +116,13 @@ public class SpotService {
 
         try {
             attractionResponse = locationBasedListClient.getLocationBasedList(
-                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", SpotType.ATTRACTION.type(), serviceKey
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "10000", SpotType.ATTRACTION.type(), serviceKey
             );
             restaurantResponse = locationBasedListClient.getLocationBasedList(
-                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", SpotType.RESTAURANT.type(), serviceKey
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "10000", SpotType.RESTAURANT.type(), serviceKey
             );
             accommodationResponse = locationBasedListClient.getLocationBasedList(
-                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "5000", SpotType.ACCOMMODATION.type(), serviceKey
+                    mobileOS, mobileApp, _type, "S", longitude.toString(), latitude.toString(), "10000", SpotType.ACCOMMODATION.type(), serviceKey
             );
         } catch (Exception e) {
             return new SpotAroundResponse(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
