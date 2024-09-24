@@ -50,7 +50,7 @@ public class SpotService {
     private static final String mobileApp = "SPOT";
     private static final String _type = "json";
 
-    public SpotDetailsResponse getSpotDetails(Integer contentId, User user) {
+    public SpotDetailsResponse getSpotDetails(Integer contentId, Long workId, User user) {
 
         CommonInfoResponse commonInfo = commonInfoClient.getCommonInfo(
                 mobileOS, mobileApp, _type, contentId.toString(), "Y", "Y", "Y", "Y", "Y", serviceKey
@@ -60,7 +60,12 @@ public class SpotService {
             throw new IllegalArgumentException("데이터가 없습니다.");
         }
 
-        SpotDetailsResponse spotDetailsResponse = SpotDetailsResponse.fromCommonInfo(commonInfo.response().body().items().item().get(0), spotRepository, likesRepository, user);
+        Spot spot = spotRepository.findByContentIdAndWorkId(contentId, workId)
+                .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
+
+        SpotDetailsResponse spotDetailsResponse = SpotDetailsResponse.fromCommonInfo(
+                commonInfo.response().body().items().item().get(0), spot, likesRepository, user);
+
         return spotDetailsResponse;
     }
 
