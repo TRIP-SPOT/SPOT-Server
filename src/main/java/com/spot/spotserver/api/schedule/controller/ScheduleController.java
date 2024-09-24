@@ -83,9 +83,10 @@ public class ScheduleController {
         return ApiResponse.success(SuccessCode.GET_SELECTED_SPOT_SUCCESS, selectedSpotsResponse);
     }
 
-    @PostMapping("/selected-spot/")
-    public <T> ApiResponse<T> selectSpot(@RequestBody @Valid List<SelectedSpotRequest> selectedSpotRequests) {
-        this.scheduleService.createSelectedSpot(selectedSpotRequests);
+    @PostMapping("/selected-spot/{id}")
+    public <T> ApiResponse<T> selectSpot(@PathVariable Long id,
+                                         @RequestBody @Valid List<SelectedSpotRequest> selectedSpotRequests) {
+        this.scheduleService.createSelectedSpot(id, selectedSpotRequests);
         return ApiResponse.success(SuccessCode.SELECT_SPOT_SUCCESS);
     }
 }
