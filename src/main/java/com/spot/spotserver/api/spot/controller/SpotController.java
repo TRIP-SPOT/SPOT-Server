@@ -34,8 +34,9 @@ public class SpotController {
     }
 
     @GetMapping("/spot/{contentId}/arounds")
-    public ApiResponse<SpotAroundResponse> getSpotAroundList(@PathVariable Integer contentId) {
-        SpotAroundResponse result = spotService.getSpotAroundList(contentId);
+    public ApiResponse<SpotAroundResponse> getSpotAroundList(@PathVariable Integer contentId,
+                                                             @RequestParam Long workId) {
+        SpotAroundResponse result = spotService.getSpotAroundList(contentId, workId);
         return ApiResponse.success(SuccessCode.GET_SPOT_AROUND_SUCCESS, result);
     }
 

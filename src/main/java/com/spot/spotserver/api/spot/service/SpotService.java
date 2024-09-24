@@ -103,11 +103,12 @@ public class SpotService {
         return EARTH_RADIUS * angularDistance;
     }
 
-    public SpotAroundResponse getSpotAroundList(Integer contentId) {
+    public SpotAroundResponse getSpotAroundList(Integer contentId, Long workId) {
 
-        Optional<Spot> spot = Optional.ofNullable(spotRepository.findByContentId(contentId).orElseThrow(() -> new IllegalArgumentException("해당하는 촬영지가 존재하지 않습니다.")));
-        Double longitude = spot.get().getLongitude();
-        Double latitude = spot.get().getLatitude();
+        Spot spot = spotRepository.findByContentIdAndWorkId(contentId, workId)
+                .orElseThrow(() -> new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND));
+        Double longitude = spot.getLongitude();
+        Double latitude = spot.getLatitude();
 
         LocationBasedResponse attractionResponse;
         LocationBasedResponse restaurantResponse;
