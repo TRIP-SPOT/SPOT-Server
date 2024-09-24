@@ -130,7 +130,8 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void createSelectedSpot(List<SelectedSpotRequest> selectedSpotRequests) {
+    public void createSelectedSpot(Long id, List<SelectedSpotRequest> selectedSpotRequests) {
+        Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
         List<SelectedSpot> selectedSpots = selectedSpotRequests
                 .stream()
                 .map((selectedSpotRequest ->
@@ -142,6 +143,7 @@ public class ScheduleService {
                             .contentTypeId(selectedSpotRequest.getContentTypeId())
                             .dist(selectedSpotRequest.getDist())
                             .image(selectedSpotRequest.getImage())
+                            .schedule(schedule)
                             .build()
                 ))
                 .toList();
