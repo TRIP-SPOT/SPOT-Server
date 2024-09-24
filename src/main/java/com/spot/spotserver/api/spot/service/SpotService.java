@@ -212,7 +212,7 @@ public class SpotService {
     public List<SpotSearchResponse> searchSpotsByWorkName(String workName, User user) {
         List<Work> works = workRepository.findByNameContainingIgnoreCase(workName);
         if (works.isEmpty()) {
-            throw new WorkNotFoundException(ErrorCode.WORK_NOT_FOUND);
+            return new ArrayList<>();
         }
 
         List<SpotSearchResponse> responses = new ArrayList<>();
@@ -220,7 +220,7 @@ public class SpotService {
         for (Work work : works) {
             List<Spot> spots = spotRepository.findByWorkId(work.getId());
             if (spots.isEmpty()) {
-                throw new SpotNotFoundException(ErrorCode.SPOT_NOT_FOUND);
+                continue;
             }
 
             for (Spot spot : spots) {
