@@ -87,11 +87,10 @@ public class ScheduleService {
     @Transactional
     public LocationResponse createLocation(LocationRequest locationRequest) {
         Schedule schedule = this.scheduleRepository.findById(locationRequest.getScheduleId()).orElseThrow();
-        Integer day = this.locationRepository.countBySchedule(schedule) % (int) ChronoUnit.DAYS.between(schedule.getStartDate(), schedule.getEndDate()) + 1;
-        Integer seq = this.locationRepository.countByScheduleAndDay(schedule, day);
+        Integer seq = this.locationRepository.countByScheduleAndDay(schedule, locationRequest.getDay());
 
         Location newLocation = Location.builder()
-                .day(day)
+                .day(locationRequest.getDay())
                 .seq(seq)
                 .name(locationRequest.getName())
                 .description(locationRequest.getDescription())
