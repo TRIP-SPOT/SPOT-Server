@@ -25,6 +25,7 @@ public enum SuccessCode {
     UPDATE_COLOR_SUCCESS(OK, "배경색이 정상적으로 변경되었습니다."),
     GET_PROFILE_SUCCESS(OK,"프로필이 정상적으로 조회되었습니다."),
     GET_LIKED_SPOT_SUCCESS(OK, "좋아요한 스팟이 정상적으로 조회되었습니다."),
+    GET_BADGE_SUCCESS(OK, "뱃지가 정상적으로 조회되었습니다."),
 
     // SPOT
     GET_SPOT_SUCCESS(OK, "촬영지 조회에 성공하였습니다."),
