@@ -73,10 +73,10 @@ public class SpotService {
         return this.spotRepository.findAll()
                 .stream()
                 .filter((spot) -> this.isWithinAccessRadius(userLatitude, userLongitude, spot))
-                .map((spot) -> {
-                    Quiz quiz = this.quizRepository.findBySpot(spot).orElseThrow();
-                    return new AccessibleSpotResponse(spot, quiz.getId());
-                })
+                .map((spot) -> this.quizRepository.findBySpot(spot)
+                        .map(quiz -> new AccessibleSpotResponse(spot, quiz.getId()))
+                        .orElse(null))
+                .filter(Objects::nonNull)
                 .toList();
     }
 
