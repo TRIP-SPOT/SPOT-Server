@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.user.controller;
 
+import com.spot.spotserver.api.quiz.dto.UserBadgeResponse;
 import com.spot.spotserver.api.spot.dto.response.UserLikedSpotsResponse;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
@@ -91,5 +92,11 @@ public class UserController {
     public ApiResponse<List<UserLikedSpotsResponse>> getLikedSpots(@CurrentUser User user) {
         List<UserLikedSpotsResponse> result = userService.getLikedSpots(user);
         return ApiResponse.success(SuccessCode.GET_LIKED_SPOT_SUCCESS, result);
+    }
+
+    @GetMapping("/badge")
+    public ApiResponse<List<UserBadgeResponse>> getBadges(@CurrentUser User user) {
+        List<UserBadgeResponse> result = userService.getBadgeCountByRegion(user);
+        return ApiResponse.success(SuccessCode.GET_BADGE_SUCCESS, result);
     }
 }
