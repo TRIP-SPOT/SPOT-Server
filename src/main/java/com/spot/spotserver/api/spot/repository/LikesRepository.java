@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LikesRepository extends JpaRepository<Likes, Long> {
+    List<Likes> findByUser(User user);
     Optional<Likes> findByUserAndSpot(User user, Spot spot);
-
     Integer countBySpot(Spot spot);
-
     @Query("SELECT l.spot, COUNT(l) as likeCount FROM Likes l GROUP BY l.spot ORDER BY likeCount DESC")
     List<Object[]> findTop5SpotsByLikes();
 }

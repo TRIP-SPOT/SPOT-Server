@@ -8,6 +8,9 @@ import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.JwtValidationType;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
+import com.spot.spotserver.api.spot.domain.Likes;
+import com.spot.spotserver.api.spot.dto.response.UserLikedSpotsResponse;
+import com.spot.spotserver.api.spot.repository.LikesRepository;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
@@ -21,8 +24,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +36,7 @@ public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final LikesRepository likesRepository;
     private final RefreshTokenService refreshTokenService;
     private final S3Service s3Service;
 
@@ -119,5 +126,17 @@ public class UserService {
         else {
             return new ProfileResponse(user.getProfileUrl(), null, null);
         }
+    }
+
+    public List<UserLikedSpotsResponse> getLikedSpots(User user) {
+        List<Likes> likedSpots = likesRepository.findByUser(user);
+
+        if (likedSpots.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return likedSpots.stream()
+                .map(likes -> UserLikedSpotsResponse.fromEntity(likes.getSpot()))
+                .collect(Collectors.toList());
     }
 }
