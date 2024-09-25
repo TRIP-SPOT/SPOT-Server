@@ -11,4 +11,6 @@ public class LocationRequest {
     private String name;
 
     private String description;
+
+    private Integer day;
 }
