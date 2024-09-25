@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.user.controller;
 
+import com.spot.spotserver.api.spot.dto.response.UserLikedSpotsResponse;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,5 +85,11 @@ public class UserController {
     public ApiResponse<ProfileResponse> getProfile(@CurrentUser User user) {
         ProfileResponse result = userService.getProfile(user);
         return ApiResponse.success(SuccessCode.GET_PROFILE_SUCCESS, result);
+    }
+
+    @GetMapping("/likes")
+    public ApiResponse<List<UserLikedSpotsResponse>> getLikedSpots(@CurrentUser User user) {
+        List<UserLikedSpotsResponse> result = userService.getLikedSpots(user);
+        return ApiResponse.success(SuccessCode.GET_LIKED_SPOT_SUCCESS, result);
     }
 }
