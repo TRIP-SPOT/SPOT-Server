@@ -8,6 +8,9 @@ import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.JwtValidationType;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
+import com.spot.spotserver.api.quiz.domain.Badge;
+import com.spot.spotserver.api.quiz.dto.UserBadgeResponse;
+import com.spot.spotserver.api.quiz.repository.BadgeRepository;
 import com.spot.spotserver.api.spot.domain.Likes;
 import com.spot.spotserver.api.spot.dto.response.UserLikedSpotsResponse;
 import com.spot.spotserver.api.spot.repository.LikesRepository;
@@ -18,16 +21,14 @@ import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
 import com.spot.spotserver.api.user.dto.response.ProfileResponse;
 import com.spot.spotserver.api.user.exception.UserNotFoundException;
 import com.spot.spotserver.api.user.repository.UserRepository;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.common.payload.ErrorCode;
 import com.spot.spotserver.common.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +38,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final LikesRepository likesRepository;
+    private final BadgeRepository badgeRepository;
     private final RefreshTokenService refreshTokenService;
     private final S3Service s3Service;
 
@@ -138,5 +140,20 @@ public class UserService {
         return likedSpots.stream()
                 .map(likes -> UserLikedSpotsResponse.fromEntity(likes.getSpot()))
                 .collect(Collectors.toList());
+    }
+
+    public List<UserBadgeResponse> getBadgeCountByRegion(User user) {
+        List<Badge> badges = badgeRepository.findByUser(user);
+        List<UserBadgeResponse> userBadges = new ArrayList<>();
+
+        for (Region region : Region.values()) {
+            userBadges.add(new UserBadgeResponse(region.ordinal(), 0));
+        }
+
+        for (Badge badge : badges) {
+            int regionOrdinal = badge.getRegion().ordinal();
+            userBadges.set(regionOrdinal, new UserBadgeResponse(regionOrdinal, badge.getCount()));
+        }
+        return  userBadges;
     }
 }
