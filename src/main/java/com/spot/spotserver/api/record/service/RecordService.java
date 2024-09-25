@@ -75,19 +75,23 @@ public class RecordService {
         updateRecord.updateTitle(recordUpdateRequest.getTitle());
         updateRecord.updateDescription(recordUpdateRequest.getDescription());
 
-        recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImageById);
+        List<String> deleteImages = recordUpdateRequest.getDeleteImages();
+
+        if (deleteImages != null) {
+            recordUpdateRequest.getDeleteImages().forEach(this.recordImageService::deleteRecordImageById);
+        }
 
         List<MultipartFile> addImages = recordUpdateRequest.getAddImages();
         
-        if (addImages == null) throw new IllegalArgumentException();
-
-        addImages.forEach(image -> {
+        if (addImages != null) {
+            addImages.forEach(image -> {
                 try {
                     recordImageService.createRecordImage(image, updateRecord, user);
                 } catch (IOException e) {
                     throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);
                 }
             });
+        }
     }
 
     @Transactional
