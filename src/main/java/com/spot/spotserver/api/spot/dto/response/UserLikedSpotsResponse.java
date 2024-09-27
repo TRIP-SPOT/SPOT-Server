@@ -9,9 +9,11 @@ public record UserLikedSpotsResponse(
         Integer region,
         Integer city,
         Long workId,
-        String posterUrl
+        String posterUrl,
+        Boolean isLiked,
+        Integer likeCount
 ) {
-    public static UserLikedSpotsResponse fromEntity(Spot spot) {
+    public static UserLikedSpotsResponse fromEntity(Spot spot, Boolean isLiked, Integer likeCount) {
         return new UserLikedSpotsResponse(
                 spot.getId(),
                 spot.getContentId().toString(),
@@ -19,7 +21,9 @@ public record UserLikedSpotsResponse(
                 spot.getRegion() != null ? spot.getRegion().ordinal() : null,
                 spot.getCity() != null ? spot.getCity().ordinal() : null,
                 spot.getWork() != null ? spot.getWork().getId() : null,
-                spot.getWork() != null ? spot.getWork().getPosterUrl() : null
+                spot.getWork() != null ? spot.getWork().getPosterUrl() : null,
+                isLiked,
+                likeCount
         );
     }
 }
