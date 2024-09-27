@@ -23,13 +23,19 @@ public class QuizService {
         return new QuizResponse(quiz);
     }
 
+    @Transactional
     public AnswerCheckResponse checkAnswer(Long id, Integer answer, User user) {
         Quiz quiz = this.quizRepository.findById(id).orElseThrow();
         boolean isCorrect = quiz.isCorrect(answer);
 
         if (isCorrect) {
-            Badge badge = this.badgeRepository.findAllByUserAndRegion(user, quiz.getRegion()).orElseThrow();
+            Badge badge = this.badgeRepository.findAllByUserAndRegion(user, quiz.getSpot().getRegion())
+                    .orElseGet(() -> Badge.builder()
+                            .region(quiz.getSpot().getRegion())
+                            .user(user)
+                            .build());
             badge.addBadge();
+            this.badgeRepository.save(badge);
         }
 
         return new AnswerCheckResponse(isCorrect, quiz);

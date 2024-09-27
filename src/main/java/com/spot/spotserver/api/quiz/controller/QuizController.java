@@ -23,8 +23,8 @@ public class QuizController {
         return ApiResponse.success(SuccessCode.GET_QUIZ_SUCCESS, this.quizService.getQuiz(id));
     }
 
-    @PostMapping("/answer/{id}")
-    public ApiResponse<AnswerCheckResponse> checkAnswer(@PathVariable Long id,
+    @PostMapping("/answer")
+    public ApiResponse<AnswerCheckResponse> checkAnswer(@RequestParam Long id,
                                            @RequestParam Integer answer,
                                            @CurrentUser User user) {
         return ApiResponse.success(SuccessCode.GET_QUIZ_RESULT_SUCCESS, this.quizService.checkAnswer(id, answer, user));
