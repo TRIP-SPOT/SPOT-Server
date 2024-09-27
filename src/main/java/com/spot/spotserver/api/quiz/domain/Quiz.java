@@ -20,12 +20,6 @@ public class Quiz extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.ORDINAL)
-    private Region region;
-
-    @Enumerated(EnumType.ORDINAL)
-    private City city;
-
     private String question;
 
     private String choice1;
@@ -43,10 +37,8 @@ public class Quiz extends BaseEntity {
     private Spot spot;
 
     @Builder
-    public Quiz(Long id, Region region, City city, String question, String choice1, String choice2, String choice3, String choice4, Integer answer, Spot spot) {
+    public Quiz(Long id, String question, String choice1, String choice2, String choice3, String choice4, Integer answer, Spot spot) {
         this.id = id;
-        this.region = region;
-        this.city = city;
         this.question = question;
         this.choice1 = choice1;
         this.choice2 = choice2;

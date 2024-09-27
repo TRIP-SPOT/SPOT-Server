@@ -9,10 +9,6 @@ import lombok.Data;
 public class QuizResponse {
     private Long id;
 
-    private Integer region;
-    
-    private Integer city;
-
     private String question;
 
     private String choice1;
@@ -25,8 +21,6 @@ public class QuizResponse {
 
     public QuizResponse(Quiz quiz) {
         this.id = quiz.getId();
-        this.region = quiz.getRegion().ordinal();
-        this.city = quiz.getCity().ordinal();
         this.question = quiz.getQuestion();
         this.choice1 = quiz.getChoice1();
         this.choice2 = quiz.getChoice2();

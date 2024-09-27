@@ -13,7 +13,7 @@ public class AnswerCheckResponse {
 
     public AnswerCheckResponse(boolean isCorrect, Quiz quiz) {
         this.isCorrect = isCorrect;
-        this.region = quiz.getRegion().ordinal();
-        this.city = quiz.getCity().ordinal();
+        this.region = quiz.getSpot().getRegion().ordinal();
+        this.city = quiz.getSpot().getCity().ordinal();
     }
 }
