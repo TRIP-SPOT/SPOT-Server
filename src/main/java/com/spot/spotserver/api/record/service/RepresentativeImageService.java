@@ -41,8 +41,8 @@ public class RepresentativeImageService {
         }
     }
 
-    public List<RepresentativeImageResponse> getRepresentativeImages() {
-        return this.representativeImageRepository.findAll()
+    public List<RepresentativeImageResponse> getRepresentativeImages(User user) {
+        return this.representativeImageRepository.findAllByUser(user)
                 .stream()
                 .map(RepresentativeImageResponse::new)
                 .toList();
