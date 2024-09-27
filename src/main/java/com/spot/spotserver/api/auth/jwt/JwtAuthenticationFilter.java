@@ -28,10 +28,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // 로그인 요청인지 확인
-        // TODO 애플로그인 구현 후 추가
+
         String requestURI = request.getRequestURI();
-        if ("/api/login/kakao".equals(requestURI)) {
+        if ("/api/login/kakao".equals(requestURI) || "/api/refresh".equals(requestURI)) {
             // 로그인 요청의 경우 JWT 검증 건너뜀
             filterChain.doFilter(request, response);
             return;

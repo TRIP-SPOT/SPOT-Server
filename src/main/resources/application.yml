@@ -3,3 +3,12 @@ spring:
     active: dev
     include:
       - secret
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    com:
+      spot:
+        spotserver: DEBUG
