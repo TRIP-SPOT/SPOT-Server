@@ -138,7 +138,9 @@ public class UserService {
         }
 
         return likedSpots.stream()
-                .map(likes -> UserLikedSpotsResponse.fromEntity(likes.getSpot()))
+                .map(likes -> UserLikedSpotsResponse.fromEntity(likes.getSpot(),
+                        likesRepository.findByUserAndSpot(user, likes.getSpot()).isPresent(),
+                        likesRepository.countBySpot(likes.getSpot())))
                 .collect(Collectors.toList());
     }
 
