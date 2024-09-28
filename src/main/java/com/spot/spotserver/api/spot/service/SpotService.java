@@ -43,6 +43,7 @@ public class SpotService {
 
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
+    private static final long QUIZ_COUNT = 5;
 
     @Value("${tourApi.serviceKey}")
     private String serviceKey;
@@ -73,6 +74,9 @@ public class SpotService {
         return this.spotRepository.findAll()
                 .stream()
                 .filter((spot) -> this.isWithinAccessRadius(userLatitude, userLongitude, spot))
+                .filter(this.quizRepository::existsBySpot)
+                .sorted(Comparator.comparing((spot) -> this.calculateDistance(userLatitude, userLongitude, spot.getLatitude(), spot.getLongitude())))
+                .limit(QUIZ_COUNT)
                 .map((spot) -> this.quizRepository.findBySpot(spot)
                         .map(quiz -> new AccessibleSpotResponse(spot, quiz.getId()))
                         .orElse(null))
