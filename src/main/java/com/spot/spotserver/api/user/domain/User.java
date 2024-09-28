@@ -52,13 +52,7 @@ public class User extends BaseEntity {
         this.color = color;
     }
 
-    public int getBadgeCount() {
-        return badges.stream().mapToInt(Badge::getCount).sum();
-    }
-
-    public void updateProfileLevel() {
-        int badgeCount = getBadgeCount();
-
+    public void updateProfileLevel(Integer badgeCount) {
         if (badgeCount <= 5) {
             this.profileLevel = ProfileLevel.BEGINNER;
         } else if (badgeCount <= 12) {
