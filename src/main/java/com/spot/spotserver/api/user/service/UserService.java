@@ -154,7 +154,7 @@ public class UserService {
 
         for (Badge badge : badges) {
             int regionOrdinal = badge.getRegion().ordinal();
-            userBadges.set(regionOrdinal, new UserBadgeResponse(regionOrdinal, badge.getCount()));
+            userBadges.set(regionOrdinal, new UserBadgeResponse(regionOrdinal, this.badgeRepository.countByUserAndRegion(user, badge.getRegion())));
         }
         return  userBadges;
     }
