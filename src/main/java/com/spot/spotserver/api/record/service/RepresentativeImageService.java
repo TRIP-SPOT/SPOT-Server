@@ -52,7 +52,7 @@ public class RepresentativeImageService {
     public void updateRepresentativeImage(RepresentativeImageRequest representativeImageRequest, User user) throws IOException {
         try {
             String newImageUrl = this.s3Service.upload(representativeImageRequest.getImage(), user.getNickname());
-            RepresentativeImage representativeImage = this.representativeImageRepository.findByRegion(representativeImageRequest.getRegion())
+            RepresentativeImage representativeImage = this.representativeImageRepository.findByUserAndRegion(user, representativeImageRequest.getRegion())
                     .orElseThrow(() -> new RepresentativeImageNotFoundException(ErrorCode.REPRESENTATIVE_IMAGE_NOT_FOUND));
             representativeImage.updateUrl(newImageUrl);
         } catch (IOException e) {
