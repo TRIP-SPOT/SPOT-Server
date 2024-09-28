@@ -62,7 +62,8 @@ public enum SuccessCode {
     ADD_LOCATION_SUCCESS(OK, "장소가 정상적으로 추가되었습니다."),
     DELETE_LOCATIONS_SUCCESS(OK, "장소들이 정상적으로 삭제되었습니다."),
     GET_SELECTED_SPOT_SUCCESS(OK, "해당 일정의 담은 장소들이 정상적으로 조회되었습니다."),
-    SELECT_SPOT_SUCCESS(OK, "장소들이 일정에 정상적으로 담겼습니다.");
+    SELECT_SPOT_SUCCESS(OK, "장소들이 일정에 정상적으로 담겼습니다."),
+    CREATE_BADGE_SUCCESS(OK, "뱃지가 정상적으로 생성되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
