@@ -1,5 +1,7 @@
 package com.spot.spotserver.api.record.service;
 
+import com.spot.spotserver.api.quiz.domain.Badge;
+import com.spot.spotserver.api.quiz.repository.BadgeRepository;
 import com.spot.spotserver.api.record.domain.Record;
 import com.spot.spotserver.api.record.exception.RecordImageProcessingException;
 import com.spot.spotserver.api.record.exception.RecordNotFoundException;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class RecordService {
     private final RecordRepository recordRepository;
     private final RecordImageService recordImageService;
+    private final BadgeRepository badgeRepository;
 
     @Transactional
     public RecordResponse createRecord(RecordRequest recordRequest, User user) {
@@ -50,6 +53,15 @@ public class RecordService {
                         throw new RecordImageProcessingException(ErrorCode.RECORD_IMAGE_PROCESSING_FAILED);
                     }
                 }).toList();
+
+        if (!this.badgeRepository.existsByUserAndCity(user, newRecord.getCity())){
+            Badge badge = Badge.builder()
+                    .region(newRecord.getRegion())
+                    .city(newRecord.getCity())
+                    .user(user)
+                    .build();
+            this.badgeRepository.save(badge);
+        }
 
         return new RecordResponse (newRecord, imageUrls);
     }
