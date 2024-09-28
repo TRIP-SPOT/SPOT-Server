@@ -28,13 +28,12 @@ public class QuizService {
         Quiz quiz = this.quizRepository.findById(id).orElseThrow();
         boolean isCorrect = quiz.isCorrect(answer);
 
-        if (isCorrect) {
-            Badge badge = this.badgeRepository.findAllByUserAndRegion(user, quiz.getSpot().getRegion())
-                    .orElseGet(() -> Badge.builder()
-                            .region(quiz.getSpot().getRegion())
-                            .user(user)
-                            .build());
-            badge.addBadge();
+        if (isCorrect && !this.badgeRepository.existsByUserAndCity(user, quiz.getSpot().getCity())) {
+            Badge badge = Badge.builder()
+                    .region(quiz.getSpot().getRegion())
+                    .city(quiz.getSpot().getCity())
+                    .user(user)
+                    .build();
             this.badgeRepository.save(badge);
         }
 

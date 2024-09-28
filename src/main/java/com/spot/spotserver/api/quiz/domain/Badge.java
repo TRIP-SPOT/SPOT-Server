@@ -1,5 +1,6 @@
 package com.spot.spotserver.api.quiz.domain;
 
+import com.spot.spotserver.common.domain.City;
 import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.domain.BaseEntity;
@@ -21,20 +22,18 @@ public class Badge extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private Region region;
 
-    private Integer count = 0;
+    @Enumerated(EnumType.ORDINAL)
+    private City city;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Badge(Long id, Region region, User user) {
+    public Badge(Long id, Region region, City city, User user) {
         this.id = id;
         this.region = region;
+        this.city = city;
         this.user = user;
-    }
-
-    public void addBadge() {
-        this.count++;
     }
 }
