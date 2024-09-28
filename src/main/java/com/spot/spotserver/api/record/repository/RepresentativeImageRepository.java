@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RepresentativeImageRepository extends JpaRepository<RepresentativeImage, Long> {
-    Optional<RepresentativeImage> findByRegion(Region region);
+    Optional<RepresentativeImage> findByUserAndRegion(User user, Region region);
     List<RepresentativeImage> findAllByUser(User user);
 }

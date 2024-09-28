@@ -66,8 +66,8 @@ public class RecordService {
         return new RecordResponse (newRecord, imageUrls);
     }
 
-    public List<RegionalRecordResponse> getRegionalRecord(Region region) {
-        List<Record> records = this.recordRepository.findAllByRegion(region);
+    public List<RegionalRecordResponse> getRegionalRecord(Region region, User user) {
+        List<Record> records = this.recordRepository.findAllByUserAndRegion(user, region);
         return records.stream()
                 .map((record) -> new RegionalRecordResponse(record, this.recordImageService.getRegionalThumbnailImage(record)))
                 .toList();
