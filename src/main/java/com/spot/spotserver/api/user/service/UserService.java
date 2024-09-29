@@ -14,10 +14,12 @@ import com.spot.spotserver.api.badge.repository.BadgeRepository;
 import com.spot.spotserver.api.spot.domain.Likes;
 import com.spot.spotserver.api.spot.dto.response.UserLikedSpotsResponse;
 import com.spot.spotserver.api.spot.repository.LikesRepository;
+import com.spot.spotserver.api.user.domain.ProfileLevel;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
 import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
+import com.spot.spotserver.api.user.dto.response.ProfileLevelResponse;
 import com.spot.spotserver.api.user.dto.response.ProfileResponse;
 import com.spot.spotserver.api.user.exception.UserNotFoundException;
 import com.spot.spotserver.api.user.repository.UserRepository;
@@ -157,5 +159,12 @@ public class UserService {
             userBadges.set(regionOrdinal, new UserBadgeResponse(regionOrdinal, this.badgeRepository.countByUserAndRegion(user, badge.getRegion())));
         }
         return  userBadges;
+    }
+
+    public ProfileLevelResponse getProfileLevel(User user) {
+        userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+        ProfileLevel profileLevel = user.getProfileLevel();
+        return new ProfileLevelResponse(profileLevel.name(), profileLevel.getDescription());
     }
 }
