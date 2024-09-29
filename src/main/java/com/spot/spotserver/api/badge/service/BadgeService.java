@@ -27,6 +27,7 @@ public class BadgeService {
                 .user(user)
                 .acquisitionType(type)
                 .build();
+
         this.badgeRepository.save(badge);
 
         user.updateProfileLevel(this.badgeRepository.countByUserAndRegion(user, region));

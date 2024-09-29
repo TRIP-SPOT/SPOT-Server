@@ -11,4 +11,12 @@ public class BadgeRequest {
     private Region region;
 
     private City city;
+
+    public void setRegion(int region) {
+        this.region = Region.values()[region];
+    }
+
+    public void setCity(int city) {
+        this.city = City.values()[city];
+    }
 }
