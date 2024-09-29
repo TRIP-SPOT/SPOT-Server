@@ -1,5 +1,7 @@
 package com.spot.spotserver.api.user.controller;
 
+import com.spot.spotserver.api.badge.dto.response.BadgeAcquisitionResponse;
+import com.spot.spotserver.api.badge.service.BadgeService;
 import com.spot.spotserver.api.quiz.dto.UserBadgeResponse;
 import com.spot.spotserver.api.spot.dto.response.UserLikedSpotsResponse;
 import com.spot.spotserver.api.user.domain.User;
@@ -9,6 +11,7 @@ import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
 import com.spot.spotserver.api.user.dto.response.*;
 import com.spot.spotserver.api.user.service.UserService;
 import com.spot.spotserver.common.annotation.CurrentUser;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.common.payload.ApiResponse;
 import com.spot.spotserver.common.payload.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final BadgeService badgeService;
 
     @PostMapping("/nickname")
     public ApiResponse registerNickname(@RequestBody NicknameRequest request,
@@ -101,5 +106,15 @@ public class UserController {
     public ApiResponse<ProfileLevelResponse> getProfileLevel(@CurrentUser User user) {
         ProfileLevelResponse result = userService.getProfileLevel(user);
         return ApiResponse.success(SuccessCode.GET_LEVEL_SUCCESS, result);
+    }
+
+    @GetMapping("/badge/acquisition")
+    public ApiResponse<List<BadgeAcquisitionResponse>> getBadgeAcquisition(@CurrentUser User user,
+                                                                           @RequestParam List<Integer> regions) {
+        List<Region> regionEnums = regions.stream()
+                .map(region -> Region.values()[region])
+                .collect(Collectors.toList());
+        List<BadgeAcquisitionResponse> result = badgeService.getBadgeAcquisition(user, regionEnums);
+        return ApiResponse.success(SuccessCode.GET_BADGE_ACQUISITION_SUCCESS, result);
     }
 }
