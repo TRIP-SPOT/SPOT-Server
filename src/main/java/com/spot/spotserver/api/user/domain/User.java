@@ -28,7 +28,9 @@ public class User extends BaseEntity {
 
     private String color;
 
-    private ProfileLevel profileLevel;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private ProfileLevel profileLevel = ProfileLevel.BEGINNER;
 
     @OneToMany(mappedBy = "user")
     private List<Badge> badges;
