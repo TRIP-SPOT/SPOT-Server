@@ -30,7 +30,7 @@ public class BadgeService {
 
         this.badgeRepository.save(badge);
 
-        user.updateProfileLevel(this.badgeRepository.countByUserAndRegion(user, region));
+        user.updateProfileLevel(this.badgeRepository.countByUser(user));
         this.userRepository.save(user);
     }
 }
