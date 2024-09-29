@@ -46,7 +46,8 @@ public record SpotAroundResponse(
 
     private static List<Place> convertToPlaces(LocationBasedResponse response) {
         return response.response().body().items().item().stream()
-                .limit(5)
+                .limit(6)
+                .skip(1)
                 .map(Place::fromLocationBasedList)
                 .collect(Collectors.toList());
     }
