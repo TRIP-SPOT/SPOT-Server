@@ -26,6 +26,7 @@ public enum SuccessCode {
     GET_PROFILE_SUCCESS(OK,"프로필이 정상적으로 조회되었습니다."),
     GET_LIKED_SPOT_SUCCESS(OK, "좋아요한 스팟이 정상적으로 조회되었습니다."),
     GET_BADGE_SUCCESS(OK, "뱃지가 정상적으로 조회되었습니다."),
+    GET_BADGE_ACQUISITION_SUCCESS(OK, "뱃지 획득 내역이 정상적으로 조회되었습니다."),
     GET_LEVEL_SUCCESS(OK, "등급이 정상적으로 조회되었습니다."),
 
     // SPOT
