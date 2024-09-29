@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
     List<Badge> findByUser(User user);
+    Integer countByUser(User user);
     Integer countByUserAndRegion(User user, Region region);
     boolean existsByUserAndCity(User user, City city);
 }
