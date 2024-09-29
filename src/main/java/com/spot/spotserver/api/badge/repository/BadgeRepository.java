@@ -13,4 +13,5 @@ public interface BadgeRepository extends JpaRepository<Badge, Long> {
     Integer countByUser(User user);
     Integer countByUserAndRegion(User user, Region region);
     boolean existsByUserAndCity(User user, City city);
+    List<Badge> findByUserAndRegionIn(User user, List<Region> regions);
 }
