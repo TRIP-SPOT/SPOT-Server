@@ -1,6 +1,6 @@
 package com.spot.spotserver.api.user.domain;
 
-import com.spot.spotserver.api.quiz.domain.Badge;
+import com.spot.spotserver.api.badge.domain.Badge;
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
