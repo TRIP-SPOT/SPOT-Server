@@ -9,6 +9,7 @@ public record UserLikedSpotsResponse(
         Integer region,
         Integer city,
         Long workId,
+        String workName,
         String posterUrl,
         Boolean isLiked,
         Integer likeCount
@@ -21,6 +22,7 @@ public record UserLikedSpotsResponse(
                 spot.getRegion() != null ? spot.getRegion().ordinal() : null,
                 spot.getCity() != null ? spot.getCity().ordinal() : null,
                 spot.getWork() != null ? spot.getWork().getId() : null,
+                spot.getWork() != null ? spot.getWork().getName() : null,
                 spot.getWork() != null ? spot.getWork().getPosterUrl() : null,
                 isLiked,
                 likeCount
