@@ -1,7 +1,7 @@
 package com.spot.spotserver.api.record.service;
 
-import com.spot.spotserver.api.quiz.domain.Badge;
-import com.spot.spotserver.api.quiz.repository.BadgeRepository;
+import com.spot.spotserver.api.badge.domain.AcquisitionType;
+import com.spot.spotserver.api.badge.service.BadgeService;
 import com.spot.spotserver.api.record.domain.Record;
 import com.spot.spotserver.api.record.exception.RecordImageProcessingException;
 import com.spot.spotserver.api.record.exception.RecordNotFoundException;
@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ import java.util.Optional;
 public class RecordService {
     private final RecordRepository recordRepository;
     private final RecordImageService recordImageService;
-    private final BadgeRepository badgeRepository;
+    private final BadgeService badgeService;
 
     @Transactional
     public RecordResponse createRecord(RecordRequest recordRequest, User user) {
@@ -54,14 +53,7 @@ public class RecordService {
                     }
                 }).toList();
 
-        if (!this.badgeRepository.existsByUserAndCity(user, newRecord.getCity())){
-            Badge badge = Badge.builder()
-                    .region(newRecord.getRegion())
-                    .city(newRecord.getCity())
-                    .user(user)
-                    .build();
-            this.badgeRepository.save(badge);
-        }
+        this.badgeService.createBadge(AcquisitionType.BY_RECORD, newRecord.getRegion(), newRecord.getCity(), user);
 
         return new RecordResponse (newRecord, imageUrls);
     }
