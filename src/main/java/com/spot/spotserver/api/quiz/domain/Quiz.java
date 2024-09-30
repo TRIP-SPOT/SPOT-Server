@@ -32,19 +32,29 @@ public class Quiz extends BaseEntity {
 
     private Integer answer;
 
+    private String cameraFilter;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Region region;
+
+    @Enumerated(EnumType.ORDINAL)
+    private City city;
+
     @ManyToOne
     @JoinColumn(name = "spot_id")
     private Spot spot;
 
     @Builder
-    public Quiz(Long id, String question, String choice1, String choice2, String choice3, String choice4, Integer answer, Spot spot) {
-        this.id = id;
+    public Quiz(String question, String choice1, String choice2, String choice3, String choice4, Integer answer, String cameraFilter, Region region, City city, Spot spot) {
         this.question = question;
         this.choice1 = choice1;
         this.choice2 = choice2;
         this.choice3 = choice3;
         this.choice4 = choice4;
         this.answer = answer;
+        this.cameraFilter = cameraFilter;
+        this.region = region;
+        this.city = city;
         this.spot = spot;
     }
 
