@@ -1,0 +1,35 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://spotdb.c9iy8g8iwmb0.ap-northeast-2.rds.amazonaws.com:3306/spotdb
+    username: root
+    password: ${spring.datasource.dev_password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://www.spot-setjetter.kro.kr:8080/api/login/kakao
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: spot1500-s3-bucket

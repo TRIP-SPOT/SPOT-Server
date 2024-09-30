@@ -1,4 +1,4 @@
-package com.spot.spotserver.api.record.domain;
+package com.spot.spotserver.common.domain;
 
 public enum Region {
     GANGWON,
@@ -8,7 +8,7 @@ public enum Region {
     JEONBUK,
     JEONNAM,
     CHUNGBUK,
-    CHUNGANG,
+    CHUNGNAM,
     SEOUL,
     INCHEON,
     DAEGU,

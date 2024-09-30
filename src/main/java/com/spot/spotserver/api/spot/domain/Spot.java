@@ -1,9 +1,18 @@
 package com.spot.spotserver.api.spot.domain;
 
+import com.spot.spotserver.common.domain.City;
+import com.spot.spotserver.common.domain.Region;
 import com.spot.spotserver.common.domain.BaseEntity;
 import jakarta.persistence.*;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Table(name="spot")
+@Getter
+@NoArgsConstructor
 public class Spot extends BaseEntity {
 
     @Id
@@ -14,9 +23,11 @@ public class Spot extends BaseEntity {
 
     private String name;
 
-    private String imageUrl;
+    @Enumerated(EnumType.ORDINAL)
+    private Region region;
 
-    private String address;
+    @Enumerated(EnumType.ORDINAL)
+    private City city;
 
     private Double longitude;
 
@@ -25,4 +36,16 @@ public class Spot extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "work_id")
     private Work work;
+
+    @Builder
+    public Spot(Long id, Integer contentId, String name, Region region, City city, Double longitude, Double latitude, Work work) {
+        this.id = id;
+        this.contentId = contentId;
+        this.name = name;
+        this.region = region;
+        this.city = city;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.work = work;
+    }
 }
