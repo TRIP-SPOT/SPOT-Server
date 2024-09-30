@@ -1,9 +1,6 @@
 package com.spot.spotserver.api.schedule.controller;
 
-import com.spot.spotserver.api.schedule.dto.request.LocationRequest;
-import com.spot.spotserver.api.schedule.dto.request.ScheduleDurationUpdateRequest;
-import com.spot.spotserver.api.schedule.dto.request.ScheduleRequest;
-import com.spot.spotserver.api.schedule.dto.request.SelectedSpotRequest;
+import com.spot.spotserver.api.schedule.dto.request.*;
 import com.spot.spotserver.api.schedule.dto.response.*;
 import com.spot.spotserver.api.schedule.service.ScheduleService;
 import com.spot.spotserver.api.user.domain.User;
@@ -69,6 +66,13 @@ public class ScheduleController {
     public ApiResponse<LocationResponse> createLocation(@RequestBody @Valid LocationRequest locationRequest) {
         LocationResponse locationResponse = this.scheduleService.createLocation(locationRequest);
         return ApiResponse.success(SuccessCode.ADD_LOCATION_SUCCESS, locationResponse);
+    }
+
+    @PatchMapping("/location/{id}")
+    public <T> ApiResponse<T> updateLocationPosition(@PathVariable Long id,
+                                                     @RequestBody @Valid LocationPositionUpdateRequest locationPositionUpdateRequest) {
+        this.scheduleService.updateLocationPosition(id, locationPositionUpdateRequest);
+        return ApiResponse.success(SuccessCode.UPDATE_LOCATION_POSITION_SUCCESS);
     }
 
     @DeleteMapping("/location/{ids}")
