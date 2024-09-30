@@ -9,7 +9,7 @@ public class LocationResponse {
 
     private Integer day;
 
-    private Integer seq;
+    private Double seq;
 
     private String name;
 
