@@ -6,10 +6,7 @@ import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.dto.request.ColorRequest;
 import com.spot.spotserver.api.user.dto.request.NicknameRequest;
 import com.spot.spotserver.api.user.dto.request.ProfileImageRequest;
-import com.spot.spotserver.api.user.dto.response.ColorResponse;
-import com.spot.spotserver.api.user.dto.response.NicknameResponse;
-import com.spot.spotserver.api.user.dto.response.ProfileImageResponse;
-import com.spot.spotserver.api.user.dto.response.ProfileResponse;
+import com.spot.spotserver.api.user.dto.response.*;
 import com.spot.spotserver.api.user.service.UserService;
 import com.spot.spotserver.common.annotation.CurrentUser;
 import com.spot.spotserver.common.payload.ApiResponse;
@@ -98,5 +95,11 @@ public class UserController {
     public ApiResponse<List<UserBadgeResponse>> getBadges(@CurrentUser User user) {
         List<UserBadgeResponse> result = userService.getBadgeCountByRegion(user);
         return ApiResponse.success(SuccessCode.GET_BADGE_SUCCESS, result);
+    }
+
+    @GetMapping("/level")
+    public ApiResponse<ProfileLevelResponse> getProfileLevel(@CurrentUser User user) {
+        ProfileLevelResponse result = userService.getProfileLevel(user);
+        return ApiResponse.success(SuccessCode.GET_LEVEL_SUCCESS, result);
     }
 }
