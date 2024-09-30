@@ -1,7 +1,7 @@
 package com.spot.spotserver.api.badge.controller;
 
 import com.spot.spotserver.api.badge.domain.AcquisitionType;
-import com.spot.spotserver.api.badge.dto.BadgeRequest;
+import com.spot.spotserver.api.badge.dto.request.BadgeRequest;
 import com.spot.spotserver.api.badge.service.BadgeService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.common.annotation.CurrentUser;
