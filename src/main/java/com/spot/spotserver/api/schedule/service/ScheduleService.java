@@ -155,6 +155,28 @@ public class ScheduleService {
         Location location = this.locationRepository.findById(id).orElseThrow();
         Double middleSeq = locationPositionUpdateRequest.getMiddle();
 
+        if (this.isDecimalLengthExcessive(middleSeq)) {
+            this.reindexLocationPosition(location.getSchedule(), locationPositionUpdateRequest.getDay());
+        }
+
         location.updatePosition(locationPositionUpdateRequest.getDay(), middleSeq);
+    }
+
+    private boolean isDecimalLengthExcessive(Double seq) {
+        String decimal = BigDecimal.valueOf(seq).stripTrailingZeros().toPlainString().split("\\.")[1];
+        return decimal.length() >= REINDEXING_LENGTH;
+    }
+
+    private void reindexLocationPosition(Schedule schedule, Integer day) {
+        List<Location> locations = this.locationRepository.findAllByScheduleAndDayOrderBySeq(schedule, day);
+
+        double initialSeq = 1.0;
+        double increment = 1.0;
+
+        IntStream.range(0, locations.size())
+                .forEach(index -> {
+                    double newSeq = initialSeq + (index * increment);
+                    locations.get(index).updateSeq(newSeq);
+                });
     }
 }
