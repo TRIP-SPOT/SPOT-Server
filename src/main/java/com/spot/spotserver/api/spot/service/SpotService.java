@@ -77,10 +77,12 @@ public class SpotService {
                 .filter(this.quizRepository::existsBySpot)
                 .sorted(Comparator.comparing((spot) -> this.calculateDistance(userLatitude, userLongitude, spot.getLatitude(), spot.getLongitude())))
                 .limit(QUIZ_COUNT)
-                .map((spot) -> this.quizRepository.findBySpot(spot)
-                        .map(quiz -> new AccessibleSpotResponse(spot, quiz.getId()))
-                        .orElse(null))
-                .filter(Objects::nonNull)
+                .map((spot) -> {
+                    Quiz quiz = this.quizRepository.findBySpot(spot)
+                            .or(() -> this.quizRepository.findByCity(spot.getCity()))
+                            .orElseThrow();
+                    return new AccessibleSpotResponse(spot, quiz.getId());
+                })
                 .toList();
     }
 
