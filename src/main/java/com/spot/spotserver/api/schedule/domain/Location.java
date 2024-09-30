@@ -22,19 +22,27 @@ public class Location extends BaseEntity {
 
     private Integer day;
 
-    private Integer seq;
+    private Double seq;
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
     @Builder
-    public Location(Long id, String name, String description, Integer day, Integer seq, Schedule schedule) {
-        this.id = id;
+    public Location(String name, String description, Integer day, Double seq, Schedule schedule) {
         this.name = name;
         this.description = description;
         this.day = day;
         this.seq = seq;
         this.schedule = schedule;
+    }
+
+    public void updatePosition(Integer day, Double newSeq) {
+        this.day = day;
+        this.seq = newSeq;
+    }
+
+    public void updateSeq(Double seq) {
+        this.seq = seq;
     }
 }
