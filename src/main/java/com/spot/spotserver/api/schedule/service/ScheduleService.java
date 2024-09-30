@@ -3,10 +3,7 @@ package com.spot.spotserver.api.schedule.service;
 import com.spot.spotserver.api.schedule.domain.Location;
 import com.spot.spotserver.api.schedule.domain.Schedule;
 import com.spot.spotserver.api.schedule.domain.SelectedSpot;
-import com.spot.spotserver.api.schedule.dto.request.LocationRequest;
-import com.spot.spotserver.api.schedule.dto.request.ScheduleDurationUpdateRequest;
-import com.spot.spotserver.api.schedule.dto.request.ScheduleRequest;
-import com.spot.spotserver.api.schedule.dto.request.SelectedSpotRequest;
+import com.spot.spotserver.api.schedule.dto.request.*;
 import com.spot.spotserver.api.schedule.dto.response.*;
 import com.spot.spotserver.api.schedule.repository.LocationRepository;
 import com.spot.spotserver.api.schedule.repository.ScheduleRepository;
@@ -20,8 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.temporal.ChronoUnit;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +30,8 @@ public class ScheduleService {
     private final LocationRepository locationRepository;
     private final SelectedSpotRepository selectedSpotRepository;
     private final S3Service s3Service;
+
+    private final static int REINDEXING_LENGTH = 10;
 
     @Transactional
     public ScheduleResponse createSchedule(ScheduleRequest scheduleRequest, User user) throws IOException {
@@ -87,7 +87,7 @@ public class ScheduleService {
     @Transactional
     public LocationResponse createLocation(LocationRequest locationRequest) {
         Schedule schedule = this.scheduleRepository.findById(locationRequest.getScheduleId()).orElseThrow();
-        Integer seq = this.locationRepository.countByScheduleAndDay(schedule, locationRequest.getDay());
+        Double seq = Double.valueOf(this.locationRepository.countByScheduleAndDay(schedule, locationRequest.getDay()));
 
         Location newLocation = Location.builder()
                 .day(locationRequest.getDay())
@@ -148,5 +148,13 @@ public class ScheduleService {
                 .toList();
 
         this.selectedSpotRepository.saveAll(selectedSpots);
+    }
+
+    @Transactional
+    public void updateLocationPosition(Long id, LocationPositionUpdateRequest locationPositionUpdateRequest) {
+        Location location = this.locationRepository.findById(id).orElseThrow();
+        Double middleSeq = locationPositionUpdateRequest.getMiddle();
+
+        location.updatePosition(locationPositionUpdateRequest.getDay(), middleSeq);
     }
 }
