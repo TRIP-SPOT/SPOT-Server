@@ -74,7 +74,6 @@ public class SpotService {
         return this.spotRepository.findAll()
                 .stream()
                 .filter((spot) -> this.isWithinAccessRadius(userLatitude, userLongitude, spot))
-                .filter(this.quizRepository::existsBySpot)
                 .sorted(Comparator.comparing((spot) -> this.calculateDistance(userLatitude, userLongitude, spot.getLatitude(), spot.getLongitude())))
                 .limit(QUIZ_COUNT)
                 .map((spot) -> {

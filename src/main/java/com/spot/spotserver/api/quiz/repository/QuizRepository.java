@@ -10,6 +10,4 @@ import java.util.Optional;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Optional<Quiz> findBySpot(Spot spot);
     Optional<Quiz> findByCity(City city);
-    boolean existsBySpot(Spot spot);
-
 }
