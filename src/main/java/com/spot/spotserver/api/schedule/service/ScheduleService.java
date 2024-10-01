@@ -129,6 +129,11 @@ public class ScheduleService {
     }
 
     @Transactional
+    public void deleteSelectedSpot(List<Long> ids) {
+        ids.forEach(this.selectedSpotRepository::deleteById);
+    }
+
+    @Transactional
     public void createSelectedSpot(Long id, List<SelectedSpotRequest> selectedSpotRequests) {
         Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
         List<SelectedSpot> selectedSpots = selectedSpotRequests
