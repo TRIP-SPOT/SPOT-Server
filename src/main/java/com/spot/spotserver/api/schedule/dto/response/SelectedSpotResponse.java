@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class SelectedSpotResponse {
+    private Long id;
+
     private String title;
 
     private String addr1;
@@ -20,6 +22,7 @@ public class SelectedSpotResponse {
     private String image;
 
     public SelectedSpotResponse(SelectedSpot spot) {
+        this.id = spot.getId();
         this.title = spot.getTitle();
         this.addr1 = spot.getAddr1();
         this.addr2 = spot.getAddr2();

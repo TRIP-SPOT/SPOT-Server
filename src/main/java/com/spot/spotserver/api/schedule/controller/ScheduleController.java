@@ -93,4 +93,10 @@ public class ScheduleController {
         this.scheduleService.createSelectedSpot(id, selectedSpotRequests);
         return ApiResponse.success(SuccessCode.SELECT_SPOT_SUCCESS);
     }
+
+    @DeleteMapping("/selected-spot/{ids}")
+    public <T> ApiResponse<T> deleteSelectedSpot(@PathVariable List<Long> ids) {
+        this.scheduleService.deleteSelectedSpot(ids);
+        return ApiResponse.success(SuccessCode.DELETE_SELECTED_SPOT_SUCCESS);
+    }
 }
