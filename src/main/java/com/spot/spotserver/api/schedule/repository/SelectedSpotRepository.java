@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface SelectedSpotRepository extends JpaRepository<SelectedSpot, Long> {
     List<SelectedSpot> findAllBySchedule(Schedule schedule);
+    boolean existsByScheduleAndContentId(Schedule schedule, String contentId);
 }

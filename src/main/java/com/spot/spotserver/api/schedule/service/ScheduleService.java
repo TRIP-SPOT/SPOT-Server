@@ -138,6 +138,7 @@ public class ScheduleService {
         Schedule schedule = this.scheduleRepository.findById(id).orElseThrow();
         List<SelectedSpot> selectedSpots = selectedSpotRequests
                 .stream()
+                .filter((spot) -> !this.selectedSpotRepository.existsByScheduleAndContentId(schedule, spot.getContentId()))
                 .map((selectedSpotRequest ->
                     SelectedSpot.builder()
                             .title(selectedSpotRequest.getTitle())
