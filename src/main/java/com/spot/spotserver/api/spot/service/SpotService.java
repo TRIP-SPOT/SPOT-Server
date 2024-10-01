@@ -78,8 +78,14 @@ public class SpotService {
                 .limit(QUIZ_COUNT)
                 .map((spot) -> {
                     Quiz quiz = this.quizRepository.findBySpot(spot)
-                            .or(() -> this.quizRepository.findByCity(spot.getCity()))
-                            .orElseThrow();
+                            .or(() -> {
+                                List<Quiz> quizzes = this.quizRepository.findByCity(spot.getCity());
+                                if (quizzes.isEmpty()) {
+                                    return Optional.empty();
+                                }
+                                Quiz randomQuiz = quizzes.get(new Random().nextInt(quizzes.size()));
+                                return Optional.of(randomQuiz);
+                            }).orElseThrow();
                     return new AccessibleSpotResponse(spot, quiz.getId());
                 })
                 .toList();
