@@ -27,10 +27,11 @@ public class SpotController {
     }
 
     @GetMapping("/spot")
-    public ApiResponse<List<AccessibleSpotResponse>> getAccessibleSpot(@RequestParam double latitude,
-                                                                       @RequestParam double longitude) {
-        List<AccessibleSpotResponse> accessibleSpotResponses = this.spotService.getAccessibleSpot(latitude, longitude);
-        return ApiResponse.success(SuccessCode.GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS, accessibleSpotResponses);
+    public ApiResponse<List<AccessibleSpotWithQuizResponse>> getAccessibleSpot(@CurrentUser User user,
+                                                                               @RequestParam double latitude,
+                                                                               @RequestParam double longitude) {
+        List<AccessibleSpotWithQuizResponse> accessibleSpotWithQuizRespons = this.spotService.getAccessibleSpotWithQuiz(user, latitude, longitude);
+        return ApiResponse.success(SuccessCode.GET_ACCESSIBLE_QUIZ_SUCCESS, accessibleSpotWithQuizRespons);
     }
 
     @GetMapping("/spot/{contentId}/arounds")
@@ -61,9 +62,17 @@ public class SpotController {
     }
 
     @GetMapping("/spot/home")
-    public ApiResponse<List<TopLikedSpotResponse>> getTop5Spots(@CurrentUser User user) {
-        List<TopLikedSpotResponse> result = spotService.getTop5Spots(user);
+    public ApiResponse<List<SpotSummaryResponse>> getTop5Spots(@CurrentUser User user) {
+        List<SpotSummaryResponse> result = spotService.getTop5Spots(user);
         return ApiResponse.success(SuccessCode.GET_TOP_LIKE_SPOT_SUCCESS, result);
+    }
+
+    @GetMapping("/spot/nearby")
+    public ApiResponse<List<SpotSummaryResponse>> getAccessible5Spots(@CurrentUser User user,
+                                                                      @RequestParam double latitude,
+                                                                      @RequestParam double longitude) {
+        List<SpotSummaryResponse> result = spotService.getAccessible5Spots(user, latitude, longitude);
+        return ApiResponse.success(SuccessCode.GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS, result);
     }
 
     @GetMapping("/spot/search")
