@@ -2,7 +2,7 @@ package com.spot.spotserver.api.spot.dto.response;
 
 import com.spot.spotserver.api.spot.domain.Spot;
 
-public record TopLikedSpotResponse(
+public record SpotSummaryResponse(
         Long id,
         String contentId,
         String name,
@@ -14,8 +14,8 @@ public record TopLikedSpotResponse(
         Boolean isLiked,
         Integer likeCount
 ) {
-    public static TopLikedSpotResponse fromEntity(Spot spot, Boolean isLiked, Integer likeCount) {
-        return new TopLikedSpotResponse(
+    public static SpotSummaryResponse fromEntity(Spot spot, Boolean isLiked, Integer likeCount) {
+        return new SpotSummaryResponse(
                 spot.getId(),
                 spot.getContentId().toString(),
                 spot.getName(),

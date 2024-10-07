@@ -31,12 +31,12 @@ public enum SuccessCode {
 
     // SPOT
     GET_SPOT_SUCCESS(OK, "촬영지 조회에 성공하였습니다."),
-    GET_SPOT_DETAIL_SUCCESS(OK, "스팟 상세 정보가 정상적으로 조회되었습니다."),
-    GET_SPOT_AROUND_SUCCESS(OK, "스팟 주변 장소 리스트가 정상적으로 조회되었습니다."),
+    GET_SPOT_DETAIL_SUCCESS(OK, "촬영지 상세 정보가 정상적으로 조회되었습니다."),
+    GET_SPOT_AROUND_SUCCESS(OK, "촬영지 주변 장소 리스트가 정상적으로 조회되었습니다."),
     GET_AROUND_DETAIL_SUCCESS(OK, "주변 장소 상세 정보가 정상적으로 조회되었습니다."),
-    GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS(OK, "반경 20km 이내의 스팟 목록이 정상적으로 조회되었습니다."),
-    LIKE_SPOT_SUCCESS(OK, "스팟에 대한 좋아요가 정상적으로 등록되었습니다."),
-    UNLIKE_SPOT_SUCCESS(OK, "스팟에 대한 좋아요가 정상적으로 삭제되었습니다."),
+    GET_WITHIN_RADIUS_SPOT_LIST_SUCCESS(OK, "반경 20km 이내의 촬영지 목록이 정상적으로 조회되었습니다."),
+    LIKE_SPOT_SUCCESS(OK, "촬영지에 대한 좋아요가 정상적으로 등록되었습니다."),
+    UNLIKE_SPOT_SUCCESS(OK, "촬영지에 대한 좋아요가 정상적으로 삭제되었습니다."),
     GET_TOP_LIKE_SPOT_SUCCESS(OK, "좋아요 상위 5개 촬영지가 정상적으로 조회되었습니다."),
     GET_SEARCH_SPOT_SUCCESS(OK, "작품명에 대한 촬영지 목록이 정상적으로 조회되었습니다."),
 
@@ -51,6 +51,7 @@ public enum SuccessCode {
     UPDATE_REPRESENTATIVE_IMAGE_SUCCESS(OK, "대표 이미지가 정상적으로 수정되었습니다."),
 
     // QUIZ
+    GET_ACCESSIBLE_QUIZ_SUCCESS(OK, "반경 20km 이내 퀴즈 목록이 정상적으로 조회되었습니다."),
     GET_QUIZ_SUCCESS(OK, "퀴즈가 정상적으로 조회되었습니다."),
     GET_QUIZ_RESULT_SUCCESS(OK, "퀴즈 정답 확인 결과가 정상적으로 조회되었습니다."),
 

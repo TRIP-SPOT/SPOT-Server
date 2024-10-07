@@ -11,7 +11,6 @@ import com.spot.spotserver.api.spot.dto.response.*;
 import com.spot.spotserver.api.spot.exception.LikeAlreadyExistException;
 import com.spot.spotserver.api.spot.exception.LikeNotFoundException;
 import com.spot.spotserver.api.spot.exception.SpotNotFoundException;
-import com.spot.spotserver.api.spot.exception.WorkNotFoundException;
 import com.spot.spotserver.api.spot.repository.LikesRepository;
 import com.spot.spotserver.api.spot.repository.SpotRepository;
 import com.spot.spotserver.api.spot.repository.WorkRepository;
@@ -43,7 +42,7 @@ public class SpotService {
 
     private static final double EARTH_RADIUS = 6371.0;
     private static final double ACCESS_RADIUS = 20.0;
-    private static final long QUIZ_COUNT = 5;
+    private static final long LIMIT_COUNT = 5;
 
     @Value("${tourApi.serviceKey}")
     private String serviceKey;
@@ -70,14 +69,33 @@ public class SpotService {
         return spotDetailsResponse;
     }
 
-    public List<AccessibleSpotResponse> getAccessibleSpot(double userLatitude, double userLongitude) {
-        return this.spotRepository.findAll()
+    public List<Spot> getAccessibleSpots(double userLatitude, double userLongitude) {
+        return spotRepository.findAll()
                 .stream()
-                .filter((spot) -> this.isWithinAccessRadius(userLatitude, userLongitude, spot))
+                .filter((spot) -> isWithinAccessRadius(userLatitude, userLongitude, spot))
                 .sorted(Comparator.comparing((spot) -> this.calculateDistance(userLatitude, userLongitude, spot.getLatitude(), spot.getLongitude())))
-                .limit(QUIZ_COUNT)
-                .map((spot) -> {
-                    Quiz quiz = this.quizRepository.findBySpot(spot)
+                .toList();
+    }
+
+    public List<SpotSummaryResponse> getAccessible5Spots(User user, double userLatitude, double userLongitude) {
+        List<Spot> accessibleSpots = getAccessibleSpots(userLatitude, userLongitude);
+        return accessibleSpots.stream()
+                .limit(LIMIT_COUNT)
+                .map(spot -> {
+                    Boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
+                    Integer likeCount = likesRepository.countBySpot(spot);
+                    return SpotSummaryResponse.fromEntity(spot, isLiked, likeCount);
+                })
+                .toList();
+    }
+
+    public List<AccessibleSpotWithQuizResponse> getAccessibleSpotWithQuiz(User user, double userLatitude, double userLongitude) {
+        List<Spot> accessibleSpots = getAccessibleSpots(userLatitude, userLongitude);
+
+        return accessibleSpots.stream()
+                .limit(LIMIT_COUNT)
+                .map(spot -> {
+                    Quiz quiz = quizRepository.findBySpot(spot)
                             .or(() -> {
                                 List<Quiz> quizzes = this.quizRepository.findByCity(spot.getCity());
                                 if (quizzes.isEmpty()) {
@@ -86,7 +104,7 @@ public class SpotService {
                                 Quiz randomQuiz = quizzes.get(new Random().nextInt(quizzes.size()));
                                 return Optional.of(randomQuiz);
                             }).orElseThrow();
-                    return new AccessibleSpotResponse(spot, quiz.getId());
+                    return new AccessibleSpotWithQuizResponse(spot, quiz.getId());
                 })
                 .toList();
     }
@@ -192,9 +210,9 @@ public class SpotService {
         }
     }
 
-    public List<TopLikedSpotResponse> getTop5Spots(User user) {
+    public List<SpotSummaryResponse> getTop5Spots(User user) {
         List<Object[]> topSpots = likesRepository.findTop5SpotsByLikes();
-        List<TopLikedSpotResponse> responses = new ArrayList<>();
+        List<SpotSummaryResponse> responses = new ArrayList<>();
 
         for (Object[] topSpot : topSpots) {
             Spot spot = (Spot) topSpot[0];
@@ -203,7 +221,7 @@ public class SpotService {
             boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
 
             // TopLikedSpotResponse로 변환하여 리스트에 추가
-            TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount.intValue());
+            SpotSummaryResponse response = SpotSummaryResponse.fromEntity(spot, isLiked, likeCount.intValue());
             responses.add(response);
         }
 
@@ -218,7 +236,7 @@ public class SpotService {
                 if (responses.stream().noneMatch(r -> r.id().equals(spot.getId()))) {
                     boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
                     int likeCount = likesRepository.countBySpot(spot);
-                    TopLikedSpotResponse response = TopLikedSpotResponse.fromEntity(spot, isLiked, likeCount); // 좋아요 수는 0으로 설정
+                    SpotSummaryResponse response = SpotSummaryResponse.fromEntity(spot, isLiked, likeCount); // 좋아요 수는 0으로 설정
                     responses.add(response);
                 }
             }
