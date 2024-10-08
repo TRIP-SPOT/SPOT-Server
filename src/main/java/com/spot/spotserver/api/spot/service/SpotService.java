@@ -22,6 +22,7 @@ import com.spot.spotserver.common.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -211,7 +212,7 @@ public class SpotService {
     }
 
     public List<SpotSummaryResponse> getTop5Spots(User user) {
-        List<Object[]> topSpots = likesRepository.findTop5SpotsByLikes();
+        List<Object[]> topSpots = likesRepository.findTop5SpotsByLikes(PageRequest.of(0, 5));
         List<SpotSummaryResponse> responses = new ArrayList<>();
 
         for (Object[] topSpot : topSpots) {
@@ -220,11 +221,11 @@ public class SpotService {
 
             boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
 
-            // TopLikedSpotResponse로 변환하여 리스트에 추가
             SpotSummaryResponse response = SpotSummaryResponse.fromEntity(spot, isLiked, likeCount.intValue());
             responses.add(response);
         }
 
+        // 5개가 채워지지 않은 경우, 랜덤으로 추가
         if (responses.size() < 5) {
             List<Spot> allSpots = spotRepository.findAll();
             Collections.shuffle(allSpots);
@@ -236,7 +237,7 @@ public class SpotService {
                 if (responses.stream().noneMatch(r -> r.id().equals(spot.getId()))) {
                     boolean isLiked = likesRepository.findByUserAndSpot(user, spot).isPresent();
                     int likeCount = likesRepository.countBySpot(spot);
-                    SpotSummaryResponse response = SpotSummaryResponse.fromEntity(spot, isLiked, likeCount); // 좋아요 수는 0으로 설정
+                    SpotSummaryResponse response = SpotSummaryResponse.fromEntity(spot, isLiked, likeCount);
                     responses.add(response);
                 }
             }
