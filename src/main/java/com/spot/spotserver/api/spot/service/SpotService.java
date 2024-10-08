@@ -246,7 +246,9 @@ public class SpotService {
     }
 
     public List<SpotSearchResponse> searchSpotsByWorkName(String workName, User user) {
-        List<Work> works = workRepository.findByNameContainingIgnoreCase(workName);
+        String trimmedWorkName = workName.trim().replaceAll("[!?,:-]", "");
+
+        List<Work> works = workRepository.searchWorksByName(trimmedWorkName);
         if (works.isEmpty()) {
             return new ArrayList<>();
         }
