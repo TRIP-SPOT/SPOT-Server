@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "dev" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "setting/216" ]
 
 permissions:
   contents: read
@@ -49,50 +49,39 @@ jobs:
           name: build-artifacts
           path: build/libs/
 
-      - name: Setup SSH
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openssh-client
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_KEY_DEV }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST_DEV }} >> ~/.ssh/known_hosts
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
 
-      - name: Upload new JAR to EC2
-        shell: bash
+      - name: Deploy JAR to EC2 using sshpass
         run: |
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }}:/home/${{ secrets.EC2_USER_DEV }}/
+          sshpass -p ${{ secrets.EC2_PASSWORD }} scp -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/
 
-      - name: Execute commands on EC2
+      - name: Execute commands on EC2 using sshpass
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_DEV }}@${{ secrets.EC2_HOST_DEV }} << 'EOF'
+          sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             # Set PATH if needed
             export PATH=/usr/bin:/bin:/sbin:/usr/sbin
 
             # Start Redis server
-            sudo systemctl start redis-server
+            if ! systemctl is-active --quiet redis-server; then
+              sudo systemctl start redis-server
+            fi
 
-            # Ensure no other process is using the port
-            sudo fuser -k -n tcp 8080
+            # Kill any process on port 8080 if needed
+            if sudo lsof -i tcp:8080; then
+              sudo fuser -k -n tcp 8080
+            fi
 
-            # Wait for a moment to ensure Redis and port are ready
-            sleep 10
+            # Backup existing JAR
+            if [ -f /home/${{ secrets.EC2_USER }}/spotserver-0.0.1-SNAPSHOT.jar ]; then
+              mv /home/${{ secrets.EC2_USER }}/spotserver-0.0.1-SNAPSHOT.jar /home/${{ secrets.EC2_USER }}/spotserver-0.0.1-SNAPSHOT.jar.bak
+            fi
 
-            # Kill any existing Java processes
-            pgrep java | xargs kill -9
+            # Run new application
+            nohup java -jar /home/${{ secrets.EC2_USER }}/spotserver-0.0.1-SNAPSHOT.jar \
+              --spring.config.location=/home/${{ secrets.EC2_USER }}/app.env \
+              > /home/${{ secrets.EC2_USER }}/nohup.out 2>&1 &
 
-            # Remove old JAR if exists
-            rm -f /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar
-
-            # Run the new Java application with environment variables
-            nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/spotserver-0.0.1-SNAPSHOT.jar \
-              --spring.datasource.url=${{ secrets.RDS_URL }} \
-              --spring.datasource.username=${{ secrets.RDS_USERNAME }} \
-              --spring.datasource.password=${{ secrets.RDS_PASSWORD }} \
-              --cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY }} \
-              --cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }} \
-              > /home/${{ secrets.EC2_USER_DEV }}/nohup.out 2>&1 &
-
-            # Check if the application is running on the expected port
-            sudo lsof -i tcp:8080
+            # Monitor application startup logs
+            tail -n 20 /home/${{ secrets.EC2_USER }}/nohup.out
           EOF
