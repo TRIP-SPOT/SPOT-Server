@@ -53,9 +53,9 @@ jobs:
 
           chmod 600 secret-key.pem
 
-          scp -i secret-key.pem -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/
+          scp -v -i secret-key.pem -o StrictHostKeyChecking=no build/libs/spotserver-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/
 
-          ssh -i secret-key.pem -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          ssh -v -i secret-key.pem -T -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
           pgrep java | xargs kill -9 || true
           nohup java -jar spotserver-0.0.1-SNAPSHOT.jar > nohup.out 2>&1 &
           EOF
