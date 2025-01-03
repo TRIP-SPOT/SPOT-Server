@@ -12,10 +12,17 @@ public class RefreshTokenService {
 
     @Transactional
     public void saveRefreshToken(final Long userId, final String refreshToken) {
-        // 기존 리프레시 토큰 삭제
-        deleteRefreshToken(userId);
-        // 새로운 리프레시 토큰 저장
+        String strUserId = userId.toString();
+        if (tokenRepository.existsById(strUserId)) {
+            tokenRepository.deleteById(strUserId);
+        }
         tokenRepository.save(Token.of(userId, refreshToken));
+    }
+
+    public String getRefreshToken(final Long userId) {
+        return tokenRepository.findById(userId.toString())
+                .map(Token::getRefreshToken)
+                .orElse(null);
     }
 
     public void deleteRefreshToken(final Long userId) {
