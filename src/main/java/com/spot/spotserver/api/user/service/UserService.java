@@ -2,12 +2,6 @@ package com.spot.spotserver.api.user.service;
 
 import com.spot.spotserver.api.auth.client.KakaoAccount;
 import com.spot.spotserver.api.auth.dto.response.KakaoUserResponse;
-import com.spot.spotserver.api.auth.dto.response.TokenResponse;
-import com.spot.spotserver.api.auth.exception.JwtCustomException;
-import com.spot.spotserver.api.auth.handler.UserAuthentication;
-import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
-import com.spot.spotserver.api.auth.jwt.JwtValidationType;
-import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.badge.domain.Badge;
 import com.spot.spotserver.api.quiz.dto.UserBadgeResponse;
 import com.spot.spotserver.api.badge.repository.BadgeRepository;
@@ -37,12 +31,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final LikesRepository likesRepository;
     private final BadgeRepository badgeRepository;
-    private final RefreshTokenService refreshTokenService;
     private final S3Service s3Service;
+
+    public Long processUser(final KakaoUserResponse userResponse) {
+        if (isExistingUser(userResponse.id())) {
+            return getIdBySocialId(userResponse.id());
+        } else {
+            return createUser(userResponse);
+        }
+    }
 
     public Long createUser(final KakaoUserResponse userResponse) {
         String email = Optional.ofNullable(userResponse.kakaoAccount())
@@ -53,39 +53,13 @@ public class UserService {
     }
 
     public Long getIdBySocialId(final Long socialId) {
-        User user = userRepository.findBySocialId(socialId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
-        return user.getId();
+        return userRepository.findBySocialId(socialId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND))
+                .getId();
     }
 
     public boolean isExistingUser(final Long socialId) {
         return userRepository.findBySocialId(socialId).isPresent();
-    }
-
-    public TokenResponse getTokenByUserId(final Long id) {
-        UserAuthentication userAuthentication = new UserAuthentication(id, null, null);
-        String refreshToken = jwtTokenProvider.issueRefreshToken(userAuthentication);
-        refreshTokenService.saveRefreshToken(id, refreshToken);
-        return TokenResponse.of(
-                jwtTokenProvider.issueAccessToken(userAuthentication),
-                refreshToken
-        );
-    }
-
-    public TokenResponse reissueToken(final String refreshToken) {
-        JwtValidationType validationType = jwtTokenProvider.validateToken(refreshToken);
-        if (validationType != JwtValidationType.VALID_JWT) {
-            throw new JwtCustomException(ErrorCode.INVALID_JWT_TOKEN);
-        }
-
-        Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
-        UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
-        String newAccessToken = jwtTokenProvider.issueAccessToken(userAuthentication);
-        String newRefreshToken = jwtTokenProvider.issueRefreshToken(userAuthentication);
-
-        // 새로운 리프레시 토큰으로 교체
-        refreshTokenService.saveRefreshToken(userId, newRefreshToken);
-        return TokenResponse.of(newAccessToken, newRefreshToken);
     }
 
     public String saveNickname(NicknameRequest nicknameRequest, User user) {

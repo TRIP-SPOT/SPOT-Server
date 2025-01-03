@@ -1,12 +1,12 @@
 package com.spot.spotserver.api.auth.jwt.redis;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-@RedisHash(value = "Token", timeToLive = 60 * 60 * 24 * 14)
+@RedisHash(value = "refreshToken", timeToLive = 60 * 60 * 24 * 14)
 @AllArgsConstructor
 @Getter
 @Builder
@@ -18,11 +18,11 @@ public class Token {
     private String refreshToken;
 
     public static Token of(
-            final Long id,
+            final Long userId,
             final String refreshToken
     ) {
         return Token.builder()
-                .id(id.toString())
+                .id(userId.toString())
                 .refreshToken(refreshToken)
                 .build();
     }
