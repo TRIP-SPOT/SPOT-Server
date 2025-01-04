@@ -2,6 +2,7 @@ package com.spot.spotserver.api.auth.jwt;
 
 import com.spot.spotserver.api.auth.exception.JwtCustomException;
 import com.spot.spotserver.api.auth.handler.UserAuthentication;
+import com.spot.spotserver.api.auth.jwt.redis.BlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import static com.spot.spotserver.api.auth.jwt.JwtValidationType.VALID_JWT;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final BlacklistService blacklistService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -38,7 +40,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             final String token = getJwtFromRequest(request);
-            if (jwtTokenProvider.validateToken(token) == VALID_JWT) {
+            if (token != null && jwtTokenProvider.validateToken(token) == VALID_JWT) {
+
+                // 블랙리스트에 있는지 확인
+                if (blacklistService.isTokenBlacklisted(token)) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                    return;
+                }
+
                 Long memberId = jwtTokenProvider.getUserFromJwt(token);
                 // authentication 객체 생성 -> principal에 유저정보를 담는다
                 UserAuthentication userAuthentication = new UserAuthentication(memberId.toString(), null, null);

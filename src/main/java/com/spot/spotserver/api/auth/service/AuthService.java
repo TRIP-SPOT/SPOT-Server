@@ -1,6 +1,5 @@
 package com.spot.spotserver.api.auth.service;
 
-import com.spot.spotserver.api.auth.client.KakaoApiClient;
 import com.spot.spotserver.api.auth.dto.response.KakaoUserResponse;
 import com.spot.spotserver.api.auth.dto.response.TokenResponse;
 import com.spot.spotserver.api.auth.exception.JwtCustomException;
@@ -8,6 +7,7 @@ import com.spot.spotserver.api.auth.exception.OAuth2TokenException;
 import com.spot.spotserver.api.auth.handler.UserAuthentication;
 import com.spot.spotserver.api.auth.jwt.JwtTokenProvider;
 import com.spot.spotserver.api.auth.jwt.JwtValidationType;
+import com.spot.spotserver.api.auth.jwt.redis.BlacklistService;
 import com.spot.spotserver.api.auth.jwt.redis.RefreshTokenService;
 import com.spot.spotserver.api.user.domain.User;
 import com.spot.spotserver.api.user.exception.UserNotFoundException;
@@ -26,11 +26,15 @@ public class AuthService {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    private final KakaoApiClient kakaoApiClient;
+    @Value("${kakao.logout-redirect-uri}")
+    private String logoutRedirectUri;
+
     private final JwtTokenProvider jwtTokenProvider;
+    private final KakaoService kakaoService;
     private final UserService userService;
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
+    private final BlacklistService blacklistService;
 
     @Transactional
     public TokenResponse login(final String accessToken) {
@@ -58,7 +62,7 @@ public class AuthService {
     }
 
     private KakaoUserResponse getUserInfo(final String accessToken) {
-        return kakaoApiClient.getUserInformation("Bearer " + accessToken);
+        return kakaoService.getUserInformation(accessToken);
     }
 
     public User getUserFromAccessToken(String accessToken) {
@@ -70,7 +74,7 @@ public class AuthService {
     public TokenResponse reissueToken(final String refreshToken) {
         JwtValidationType validationType = jwtTokenProvider.validateToken(refreshToken);
 
-        if (validationType != JwtValidationType.VALID_JWT) {
+        if (validationType != JwtValidationType.VALID_JWT || blacklistService.isTokenBlacklisted(refreshToken)) {
             throw new JwtCustomException(ErrorCode.INVALID_JWT_TOKEN);
         }
 
@@ -82,5 +86,17 @@ public class AuthService {
         // 새로운 리프레시 토큰으로 교체
         refreshTokenService.saveRefreshToken(userId, newRefreshToken);
         return TokenResponse.of(newAccessToken, newRefreshToken);
+    }
+
+    public void kakaoLogout(String accessToken, User user) {
+        // Redis Blacklist에 토큰 추가
+        blacklistService.addToBlacklist(accessToken, false);
+        String refreshToken = refreshTokenService.getRefreshToken(user.getId());
+        blacklistService.addToBlacklist(refreshToken, true);
+
+        // 리프레시 토큰 삭제
+        refreshTokenService.deleteRefreshToken(user.getId());
+
+        kakaoService.logout(clientId, logoutRedirectUri);
     }
 }

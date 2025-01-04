@@ -34,3 +34,5 @@ cloud:
       static: ap-northeast-2
     s3:
       bucket: spot1500-s3-bucket
+kakao:
+  logout-redirect-uri: http://localhost:3000
